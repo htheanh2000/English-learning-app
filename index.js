@@ -26,20 +26,20 @@ if (__DEV__) {
 	console.info = () => {};
 }
 
-function WrapApp(){
+function WrapApp(props){
   return (
     <Provider store={store}>
         <PaperProvider>
-          <App />
+          	<App props={props} />
         </PaperProvider>
     </Provider>
   )
 }
 
 
-const test =async () => {
-	console.log('Receiving test!');
+const Timeslide =async () => {
+	// console.log('Receiving TimeSlide!');
 };
 
-AppRegistry.registerHeadlessTask('test', () => test);
+AppRegistry.registerHeadlessTask('TimeSlide', () => Timeslide);
 AppRegistry.registerComponent(appName, () => WrapApp);

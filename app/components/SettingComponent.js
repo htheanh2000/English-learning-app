@@ -15,31 +15,15 @@ import ImagePicker from 'react-native-image-picker';
 import AsyncStorage from '@react-native-community/async-storage';
 import TimeSlide from '../../Timeslide';
 
-function SettingComponent(props) {
+function SettingComponent () {
+
+
   let [source, setSource] = useState('');
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [theme, setTheme] = useState('value');
 
 
-  const dispatch = useDispatch();
 
-  const [lock, setLock] = useState(false);
-
-  const setLockandService =async()=> {
-    await setLock(!lock);
-    console.log("lock", lock);
-    lock ? TimeSlide.startService() : TimeSlide.stopService()
-    lock ? alert("you have startService") : alert("you have stopService")
-  }
-
-  const _onPressItem = (type) => {
-    console.log("type", type);
-    props.navigation.navigate('PatternComponent')
-  }
-
-  const _onPressItem2 = async () => {
-    console.log("click item 2");
-  }
-  const selectWallpaper = async() => {
+  const selectWallpaper = async () => {
     console.log("selectWallpaper");
     var options = {
       title: 'Select Image',
@@ -62,58 +46,70 @@ function SettingComponent(props) {
         console.log('User tapped custom button: ', response.customButton);
         alert(response.customButton);
       } else {
-        let source =  'data:image/jpeg;base64,' + response.data
+        let source = 'data:image/jpeg;base64,' + response.data
         setSource('data:image/jpeg;base64,' + response.data)
-        
-
-        console.log("AsyncStorage src",source);
-        await AsyncStorage.setItem("wallpaper",JSON.stringify(source))
+        console.log("AsyncStorage src", source);
+        await AsyncStorage.setItem("wallpaper", JSON.stringify(source))
         const img = await AsyncStorage.getItem("wallpaper")
         console.log("img", img);
       }
     });
+  }
+  const setThemef = (t) => {
+    setTheme(t)
+    console.log("theme", theme);
+  }
 
-  
+  const showPopUp =()=> {
+
   }
 
   return (
     <View style={styles.container}>
       {
         <View>
-          <List.Item
-            title="Profile"
-            //description="Item description"
-            left={props => <List.Icon {...props} icon="profile" />}
-          />
           <List.AccordionGroup>
             <List.Accordion
-              title="Password"
+              title="Themes"
               id="1"
               left={props => <List.Icon {...props} icon="onepassword" />}
             >
-              <List.Item title="Pattern" onPress={() => _onPressItem('Pattern')} />
-              <List.Item title="Number" onPress={_onPressItem2} />
-              <List.Item title="Slide" onPress={_onPressItem2} />
-              <List.Item title="Gesture" onPress={_onPressItem2} />
-              <List.Item title="No" onPress={_onPressItem2} />
+              <View style={theme === "Motivation" ? styles.active : styles.unactive}>
+                <List.Item title="Motivation" onPress={(t) => setThemef(t = "Motivation")} />
+              </View>
+              <View style={theme === "Math" ? styles.active : styles.unactive}>
+                <List.Item title="Math" onPress={(t) => setThemef(t = "Math")} />
+              </View>
+              <View style={theme === "Chemistry" ? styles.active : styles.unactive}>
+                <List.Item title="Chemistry"  onPress={(t) => setThemef(t = "Chemistry")} />
+              </View>
+              <View style={theme === "Scientist" ? styles.active : styles.unactive}>
+                <List.Item title="Scientist"  onPress={(t) => setThemef(t = "Scientist")} />
+              </View>
+
             </List.Accordion>
+
+            <List.Accordion
+              title="Wallpaper"
+              id="1"
+              left={props => <List.Icon {...props} icon="onepassword" />}
+            >
+              <View style={theme === "Motivation" ? styles.active : styles.unactive}>
+                <List.Item title="Coming soon" onPress={(t) => setThemef(t = "Motivation")} />
+              </View>
+              <View style={theme === "Math" ? styles.active : styles.unactive}>
+                <List.Item title="Coming soon" onPress={(t) => setThemef(t = "Math")} />
+              </View>
+              <View style={theme === "Chemistry" ? styles.active : styles.unactive}>
+                <List.Item title="Coming soon"  onPress={(t) => setThemef(t = "Chemistry")} />
+              </View>
+              <View style={theme === "Scientist" ? styles.active : styles.unactive}>
+                <List.Item title="Coming soon"  onPress={(t) => setThemef(t = "Scientist")} />
+              </View>
+            </List.Accordion>
+
           </List.AccordionGroup>
-          <List.Item
-            title="Password"
-            left={props => <List.Icon {...props} icon="onepassword" />}
-          />
-          <List.Item
-            title="Wallpaper"
-            left={props => <List.Icon {...props} icon="wallpaper" />}
-            onPress={() => selectWallpaper()}
-          />
-          <List.Item
-            title="Lock screen"
-            //description="Item description"
-            left={props => <List.Icon {...props} icon="lock" />}
-            right={props => <Checkbox style={{ color: 'red', marginLeft: 0 }} status={lock ? 'unchecked' : 'checked'} label="Item" />}
-            onPress={() => setLockandService(lock)}
-          />
+
         </View>
       }
     </View>
@@ -124,7 +120,14 @@ export default SettingComponent
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#fff"
+  },
+  active: {
+    backgroundColor: "#d0efff"
+  },
+  unactive: {
+    backgroundColor: "white"
   }
 });
 

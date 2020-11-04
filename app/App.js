@@ -2,7 +2,7 @@ import React, { Button, Fragment, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux'
 import { createScreen } from './state/screens/actions'
 import { getScreen, setScreen } from './state/screens/hooks'
-
+import { StyleSheet, Text, View, SafeAreaView, PermissionsAndroid } from "react-native";
 import {check,request,openSettings, PERMISSIONS, RESULTS} from 'react-native-permissions';
 //HOme
 import SettingComponent from './components/SettingComponent'
@@ -27,11 +27,25 @@ const AuthOptions = {
   headerShown: false
 }
 
+const settingOptions = {
+  headerStyle: {
+    backgroundColor: '#000000',
+  },
+  headerTintColor: '#fff',
+  title: 'Setting',
+  headerTitleStyle: {
+    fontWeight: 'light',
+    fontSize: 16,
+    
+    // textAlign: "center"
+  },
+}
+function RootStack(props) {
 
-function RootStack() {
+console.log("props.alarmID",props.props.alarmID);
   return (
     <Stack.Navigator
-      initialRouteName="tenten"
+      initialRouteName= {props.props.alarmID  ? "tenten": "SplashScreen"}
     >
       <Stack.Screen name="tenten" component={tenten} options={AuthOptions} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} options={AuthOptions} />
@@ -39,7 +53,7 @@ function RootStack() {
       <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={AuthOptions} />
       <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} options={AuthOptions} />
 
-      <Tab.Screen name="SettingComponent" component={SettingComponent} />
+      <Tab.Screen name="SettingComponent" component={SettingComponent}  options={settingOptions}/>
       <Tab.Screen name="PatternComponent" component={PatternComponent} options={AuthOptions}/>
       <Tab.Screen name="Advertisement" component={Advertisement} />
     </Stack.Navigator>
@@ -47,42 +61,40 @@ function RootStack() {
 }
 
 
-const _checkCameraAndPhotos = () => {
-  check(PERMISSIONS.ANDROID.LOCATION_ALWAYS)
-  .then((result) => {
-    switch (result) {
-      case RESULTS.UNAVAILABLE:
-        console.log(
-          'This feature is not available (on this device / in this context)',
-        );
-        openSettings()
-        break;
-      case RESULTS.DENIED:
-        console.log(
-          'The permission has not been requested / is denied but requestable',
-        );
-        break;
-      case RESULTS.GRANTED:
-        return 1;
-        console.log('The permission is granted');
-        break;
-      case RESULTS.BLOCKED:
-        console.log('The permission is denied and not requestable anymore');
-        break;
+const requestCameraPermission = async () => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA,
+      {
+        title: "Cool Photo App Camera Permission",
+        message:
+          "Cool Photo App needs access to your camera " +
+          "so you can take awesome pictures.",
+        buttonNeutral: "Ask Me Later",
+        buttonNegative: "Cancel",
+        buttonPositive: "OK"
+      }
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log("You can use the camera");
+    } else {
+      console.log("Camera permission denied");
     }
-  })
-  .catch((error) => {
-    // …
-  });
-}
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
 
 
 export default function App(props) {
-  // _checkCameraAndPhotos()
+  console.log("app", props);
+  requestCameraPermission()
   return (
+    
     <Fragment>
       <NavigationContainer>
-          {RootStack()}
+          {RootStack(props)}
       </NavigationContainer>
     </Fragment>
   )

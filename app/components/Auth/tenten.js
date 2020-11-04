@@ -10,7 +10,6 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 
 const tenten = props => {
     Timeslide.startService()
-    console.log("startService");
     const quote = Quotes[Math.floor(Math.random() * 10)]
     const bg = Bg[Math.floor(Math.random() * 10)]
 

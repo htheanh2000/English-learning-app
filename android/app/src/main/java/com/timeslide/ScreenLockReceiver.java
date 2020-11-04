@@ -15,6 +15,7 @@ public class ScreenLockReceiver extends BroadcastReceiver {
              Log.d(TAG, "onReceive called: screen on");
             Intent i = new Intent(context, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra("alarmID", "1111111");
             context.startActivity(i);
         } 
         else if (action.equals(Intent.ACTION_SCREEN_OFF)) 
@@ -24,8 +25,9 @@ public class ScreenLockReceiver extends BroadcastReceiver {
 
         else if (action.equals(Intent.ACTION_USER_PRESENT)) {
             Log.d(TAG, "onReceive called: screen unlocked");
-            Intent i = new Intent(context, MainActivity.class);
+         Intent i = new Intent(context, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.putExtra("alarmID", 1111111);
             context.startActivity(i);
         }
 
