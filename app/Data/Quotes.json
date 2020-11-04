@@ -1,0 +1,62 @@
+[
+    {
+        "type": "power",
+        "id": 1,
+        "author": "Khuyết danh",
+        "content": "Chỉ cần biết rằng, khi bạn thực sự muốn thành công, bạn sẽ không bao giờ từ bỏ, dù cho mọi thứ có tồi tệ đến đâu đi chăng nữa."
+    },
+    {
+        "type": "power",
+        "id": 2,
+        "author": "Les Brown",
+        "content": "Hãy chịu trách nhiệm về cuộc đời mình. Nên biết rằng chính bạn chứ không ai khác sẽ là người đưa bạn tới nơi bạn muốn"
+    },
+    {
+        "type": "power",
+        "id": 3,
+        "author": "Khuyết danh",
+        "content": "Những việc tôi đã làm, tôi không hối hận. Tôi chỉ hối hận về những việc tôi có cơ hội thực hiện nhưng lại không làm mà thôi."
+    },
+    {
+        "type": "power",
+        "id": 4,
+        "author": "Joshua J. Marine",
+        "content": "Thách thức là điều làm cho cuộc sống trở nên thú vị và vượt qua thử thách chính là những gì tạo nên ý nghĩa cuộc sống."
+    },
+    {
+        "type": "power",
+        "id": 5,
+        "author": "Khuyết danh",
+        "content": "Thật khó để chờ đợi một điều gì đó bạn biết có thể chẳng bao giờ xảy ra, nhưng còn khó hơn để từ bỏ khi đó là mọi điều mà bạn muốn."
+    },
+    {
+        "type": "power",
+        "id": 6,
+        "author": "Khuyết danh",
+        "content": "Một trong những bí quyết quan trọng nhất để có được thành công là lập nên quy tắc làm những việc bạn biết mình nên làm, dù cho bạn không muốn đi chăng nữa."
+    },
+    {
+        "type": "power",
+        "id": 7,
+        "author": "Khuyết danh",
+        "content": "Những điều tốt đẹp sẽ đến với những người biết chờ đợi... những điều tuyệt vời hơn sẽ đến với những người chịu bắt tay vào việc và làm bất cứ điều gì để làm chúng trở thành hiện thực."
+    },
+    {
+        "type": "power",
+        "id": 8,
+        "author": "Denis Waitley",
+        "content": "Hạnh phúc là thứ không thể đến được, sở hữu được, kiếm được hay mặc vào được. Nó là trải nghiệm tinh thần của mỗi phút giây ta sống với tình yêu, vinh dự và lòng biết ơn."
+    },
+    {
+        "type": "power",
+        "id": 9,
+        "author": "Bill Cosby",
+        "content": "Để thành công, khao khát thành công của bạn phải lớn hơn nỗi sợ thất bại."
+    },
+    {
+        "type": "power",
+        "id": 10,
+        "author": "Khuyết danh",
+        "content": "Hãy đi đến nơi mà bạn được chào đón – chứ không phải nơi người khác phải chịu đựng bạn. Nếu họ không thể nhìn ra giá trị thực của bạn, đã đến lúc có một khởi đầu mới."
+    }
+]

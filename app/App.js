@@ -1,17 +1,19 @@
 import React, { Button, Fragment, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux'
-import { createScreen } from './app/state/screens/actions'
-import { getScreen, setScreen } from './app/state/screens/hooks'
+import { createScreen } from './state/screens/actions'
+import { getScreen, setScreen } from './state/screens/hooks'
+
+import {check,request,openSettings, PERMISSIONS, RESULTS} from 'react-native-permissions';
 //HOme
-import SettingComponent from './app/components/SettingComponent'
-import PatternComponent from './app/components/PatternComponent'
-import Advertisement from './app/components/Advertisement'
+import SettingComponent from './components/SettingComponent'
+import PatternComponent from './components/PatternComponent'
+import Advertisement from './components/Advertisement'
 //Auth 
-import SplashScreen from './app/components/Auth/SplashScreen'
-import LoginScreen from './app/components/Auth/LoginScreen'
-import RegisterScreen from './app/components/Auth/RegisterScreen'
-import ForgotPasswordScreen from './app/components/Auth/ForgotPasswordScreen'
-import tenten from './app/components/Auth/tenten'
+import SplashScreen from './components/Auth/SplashScreen'
+import LoginScreen from './components/Auth/LoginScreen'
+import RegisterScreen from './components/Auth/RegisterScreen'
+import ForgotPasswordScreen from './components/Auth/ForgotPasswordScreen'
+import tenten from './components/Auth/tenten'
 
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -36,7 +38,7 @@ function RootStack() {
       <Stack.Screen name="LoginScreen" component={LoginScreen} options={AuthOptions} />
       <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={AuthOptions} />
       <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} options={AuthOptions} />
-    
+
       <Tab.Screen name="SettingComponent" component={SettingComponent} />
       <Tab.Screen name="PatternComponent" component={PatternComponent} options={AuthOptions}/>
       <Tab.Screen name="Advertisement" component={Advertisement} />
@@ -45,31 +47,35 @@ function RootStack() {
 }
 
 
-// const _checkCameraAndPhotos = () => {
-//   Permissions.checkMultiple(['camera', 'photo']).then(response => {
-//     //response is an object mapping type to permission
-//     if(!response) {
-//       _alertForPhotosPermission()
-//     }
-//   })
-// }
+const _checkCameraAndPhotos = () => {
+  check(PERMISSIONS.ANDROID.LOCATION_ALWAYS)
+  .then((result) => {
+    switch (result) {
+      case RESULTS.UNAVAILABLE:
+        console.log(
+          'This feature is not available (on this device / in this context)',
+        );
+        openSettings()
+        break;
+      case RESULTS.DENIED:
+        console.log(
+          'The permission has not been requested / is denied but requestable',
+        );
+        break;
+      case RESULTS.GRANTED:
+        return 1;
+        console.log('The permission is granted');
+        break;
+      case RESULTS.BLOCKED:
+        console.log('The permission is denied and not requestable anymore');
+        break;
+    }
+  })
+  .catch((error) => {
+    // …
+  });
+}
 
-// const _alertForPhotosPermission =()=> {
-//   Alert.alert(
-//     'Can we access your photos?',
-//     'We need access so you can set your profile pic',
-//     [
-//       {
-//         text: 'No way',
-//         onPress: () => console.log('Permission denied'),
-//         style: 'cancel',
-//       },
-//       this.state.photoPermission == 'undetermined'
-//         ? { text: 'OK', onPress: this._requestPermission }
-//         : { text: 'Open Settings', onPress: Permissions.openSettings },
-//     ],
-//   )
-// }
 
 export default function App(props) {
   // _checkCameraAndPhotos()

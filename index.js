@@ -2,15 +2,13 @@
  * @format
  */
 
-import {AppRegistry,DeviceEventEmitter} from 'react-native';
+import {AppRegistry} from 'react-native';
 import {name as appName} from './app.json';
 import React, { Component } from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider } from 'react-redux';
-import App from './App';
-import { configureStore } from '@reduxjs/toolkit'
-import store, { persistor } from './app/state'
-import { PersistGate } from 'redux-persist/integration/react';
+import App from './app/App';
+import store from './app/state'
 
 
 
@@ -31,19 +29,17 @@ if (__DEV__) {
 function WrapApp(){
   return (
     <Provider store={store}>
-      {/* <PersistGate loading={null} persistor={persistor}> */}
         <PaperProvider>
           <App />
         </PaperProvider>
-      {/* </PersistGate> */}
     </Provider>
   )
 }
 
 
-const TimeSlide =async () => {
-	console.log('Receiving TimeSlide!');
+const test =async () => {
+	console.log('Receiving test!');
 };
 
-AppRegistry.registerHeadlessTask('TimeSlide', () => TimeSlide);
+AppRegistry.registerHeadlessTask('test', () => test);
 AppRegistry.registerComponent(appName, () => WrapApp);

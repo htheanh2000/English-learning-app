@@ -2,19 +2,28 @@ import React, { useState, useEffect } from 'react';
 import {View,Text, StyleSheet,Image,Dimensions } from 'react-native';
 import Timeslide from '../../../Timeslide'
 
+import Quotes from '../../Data/Quotes.json'
+import Bg from '../../Data/Bg'
+
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 const tenten = props => {
     Timeslide.startService()
+    console.log("startService");
+    const quote = Quotes[Math.floor(Math.random() * 10)]
+    const bg = Bg[Math.floor(Math.random() * 10)]
+
   return (
     <View style={styles.container}>
         <Image style={{width: screenWidth, height:screenHeight, opacity: .2}}
-        source={{
-            uri: "https://thongtinz.com/wp-content/uploads/2020/08/hinh-nen-mau-den-41.jpg",
-          }}
+            source={bg.uri}
         ></Image>
-        <Text style={{ position:"absolute", color:"white",fontSize:20, fontWeight:"100", lineHeight:30 ,textAlign:"center", margin:30, alignItems:"center", justifyContent:"center"}}>“Chỉ cần biết rằng, khi bạn thực sự muốn thành công, bạn sẽ không bao giờ từ bỏ cho đến khi đạt được nó, dẫu cho tình hình có tệ đến đâu chăng nữa.”</Text>
+        <View style={{position:"absolute"}}>
+          <Text style={styles.content}>"{quote.content}"</Text>
+          <Text style={styles.author}>-- {quote.author} --</Text>
+        </View>
+       
     </View>
   );
 };
@@ -31,4 +40,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 80,
   },
+  content: {
+     color:"white",
+     fontSize:16, 
+     fontWeight:"100", 
+     lineHeight:25 ,
+     textAlign:"center", 
+     margin:30, 
+     alignItems:"center", 
+     justifyContent:"center"
+  },
+  author: {
+    color:"white",
+    fontSize:18, 
+    fontWeight:"100", 
+    lineHeight:25 ,
+    textAlign:"center", 
+    margin:30, 
+    alignItems:"center", 
+    justifyContent:"center"
+  }
 });

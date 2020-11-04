@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.timeslide">
+  package="com.test">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -30,15 +30,15 @@
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
       <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-5955017858640320~2360800849"/>
         <service
-            android:name="com.timeslide.TimeSlideService"
+            android:name="com.test.TimeSlideService"
             android:enabled="true"
             android:exported="false" >
         </service>
        <service
-            android:name="com.timeslide.TimeSlideEventService">
+            android:name="com.test.TimeSlideEventService">
         </service>
       <receiver
-            android:name="com.timeslide.BootUpReceiver"
+            android:name="com.test.BootUpReceiver"
             android:enabled="true"
             android:permission="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION">
             <intent-filter>
