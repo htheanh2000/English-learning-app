@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {View,Text, StyleSheet,Image,Dimensions } from 'react-native';
+import {View,Text, StyleSheet,Image,Dimensions,TouchableOpacity,BackHandler } from 'react-native';
 import Timeslide from '../../../Timeslide'
-
+import RNExitApp from 'react-native-exit-app';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Quotes from '../../Data/Quotes.json'
 import Bg from '../../Data/Bg'
 
@@ -18,11 +19,17 @@ const tenten = props => {
         <Image style={{width: screenWidth, height:screenHeight, opacity: .2}}
             source={bg.uri}
         ></Image>
+        
         <View style={{position:"absolute"}}>
           <Text style={styles.content}>"{quote.content}"</Text>
           <Text style={styles.author}>-- {quote.author} --</Text>
+          <TouchableOpacity style={styles.icon} onPress={() =>  BackHandler.exitApp() } >
+             <AntDesign name= "heart"  color= "tomato" size={40} />
+             <Text style={{color:"#fff"}}>Click me to out app!</Text>
+          </TouchableOpacity>
         </View>
-       
+
+        
     </View>
   );
 };
@@ -58,5 +65,9 @@ const styles = StyleSheet.create({
     margin:30, 
     alignItems:"center", 
     justifyContent:"center"
+  },
+  icon :{
+    alignItems:"center",
+    justifyContent:"center",
   }
 });

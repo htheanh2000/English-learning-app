@@ -2,27 +2,27 @@ import React, { Component, Fragment, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createScreen } from '../state/screens/actions'
 import {
-  Image,
   StyleSheet,
   View,
   Text,
-  Switch
+  Dimensions,
+  TouchableOpacity,
+  Image
 } from 'react-native';
-import { RNLockScreen } from 'react-native-lock-screen'
-import { ListItem, Avatar } from 'react-native-elements'
-import { List, Checkbox } from 'react-native-paper';
 import ImagePicker from 'react-native-image-picker';
 import AsyncStorage from '@react-native-community/async-storage';
-import TimeSlide from '../../Timeslide';
-
+import { useNavigation } from '@react-navigation/native';
+const widthR = Dimensions.get("screen").width;
+const heightR = Dimensions.get("screen").height;
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 function SettingComponent () {
-
 
   let [source, setSource] = useState('');
   const [theme, setTheme] = useState('value');
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
 
-
-
+  const navigation = useNavigation()
   const selectWallpaper = async () => {
     console.log("selectWallpaper");
     var options = {
@@ -35,6 +35,8 @@ function SettingComponent () {
         path: 'images',
       },
     };
+
+    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
     ImagePicker.showImagePicker(options, async response => {
       console.log('Response = ', response);
@@ -66,52 +68,20 @@ function SettingComponent () {
 
   return (
     <View style={styles.container}>
-      {
-        <View>
-          <List.AccordionGroup>
-            <List.Accordion
-              title="Themes"
-              id="1"
-              left={props => <List.Icon {...props} icon="onepassword" />}
-            >
-              <View style={theme === "Motivation" ? styles.active : styles.unactive}>
-                <List.Item title="Motivation" onPress={(t) => setThemef(t = "Motivation")} />
-              </View>
-              <View style={theme === "Math" ? styles.active : styles.unactive}>
-                <List.Item title="Math" onPress={(t) => setThemef(t = "Math")} />
-              </View>
-              <View style={theme === "Chemistry" ? styles.active : styles.unactive}>
-                <List.Item title="Chemistry"  onPress={(t) => setThemef(t = "Chemistry")} />
-              </View>
-              <View style={theme === "Scientist" ? styles.active : styles.unactive}>
-                <List.Item title="Scientist"  onPress={(t) => setThemef(t = "Scientist")} />
-              </View>
-
-            </List.Accordion>
-
-            <List.Accordion
-              title="Wallpaper"
-              id="1"
-              left={props => <List.Icon {...props} icon="onepassword" />}
-            >
-              <View style={theme === "Motivation" ? styles.active : styles.unactive}>
-                <List.Item title="Coming soon" onPress={(t) => setThemef(t = "Motivation")} />
-              </View>
-              <View style={theme === "Math" ? styles.active : styles.unactive}>
-                <List.Item title="Coming soon" onPress={(t) => setThemef(t = "Math")} />
-              </View>
-              <View style={theme === "Chemistry" ? styles.active : styles.unactive}>
-                <List.Item title="Coming soon"  onPress={(t) => setThemef(t = "Chemistry")} />
-              </View>
-              <View style={theme === "Scientist" ? styles.active : styles.unactive}>
-                <List.Item title="Coming soon"  onPress={(t) => setThemef(t = "Scientist")} />
-              </View>
-            </List.Accordion>
-
-          </List.AccordionGroup>
-
+        <View style={styles.title}>
+            <Text style={styles.bigText}>Settings</Text>
+            <AntDesign style={{marginRight:10}} name= "setting"  color= "#cfffdb" size={60}/>
         </View>
-      }
+      
+        <TouchableOpacity style={styles.item} onPress={()=> navigation.navigate("ThemeComponent")}>
+            <MaterialIcons style={styles.icon} name= "wallpaper"  color= "#008000" size={30} />
+            <Text>Current Themes: Decoration</Text>
+            <AntDesign style={styles.rightIcon} name= "right"  color= "#008000" size={30}/>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.item}>
+            <AntDesign name= "heart"  color= "tomato" size={20} />
+        </TouchableOpacity>
     </View>
   )
 }
@@ -123,12 +93,42 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff"
   },
-  active: {
-    backgroundColor: "#d0efff"
+  item: {
+    width:widthR,
+    height:50,
+    // justifyContent:"center",
+    alignItems:"center",
+    padding:10,
+    borderBottomWidth:2,
+    borderColor:"#eee",
+    flexDirection:"row"
   },
-  unactive: {
-    backgroundColor: "white"
+  icon: {
+    marginRight:20
+  },
+  rightIcon: {
+    position:"absolute",
+    right:20
+  },
+  bigText: {
+    fontWeight:"bold",
+    fontSize:36,
+    color:"#cfffdb"
+  },
+  title: {
+    height:heightR/3,
+    padding:30,
+    flexDirection:"column",
+    justifyContent:"center",
+    alignItems:"center",
+    backgroundColor:"#4dbf6b",
+  
+  },
+  gif: {
+    width:100,
+    height:100
   }
+
 });
 
 
