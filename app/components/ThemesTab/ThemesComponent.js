@@ -88,7 +88,9 @@ const ThemesComponent = () => {
     };
 
     function _goBack() {
-        // navigation.pop()
+        db.collections.get('blogs').prepareCreate(blog => {
+            blog.name = "blogNames[i] || blog.id"
+          })
     }
 
     const _handleSearch = () => {
@@ -125,6 +127,7 @@ const ThemesComponent = () => {
                     placeholder="Search"
                 />
             </View>
+          
 
             <SafeAreaView >
                 <ScrollView >

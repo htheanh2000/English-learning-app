@@ -6,6 +6,7 @@ const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
+
 const DATA = [
     {
         id: "3ac68afc-c605-48d3-a4f8-fbd91aa97fg3",
@@ -124,7 +125,6 @@ const ThemeDetail = () => {
                     <Appbar.Action icon="dots-vertical" onPress={_handleMore} />
                 </Appbar.Header>
             </View>
-
             <View style={styles.shadow}>
                 <Image style={styles.backgroundImg} source={{ uri: "https://source.unsplash.com/random/" }}></Image>
                 <Text style={styles.backgroundText}>Decoration</Text>
@@ -132,7 +132,7 @@ const ThemeDetail = () => {
                               <AntDesign name= {tym ? "heart" :"hearto" }  color= "tomato" size={30} />
                         </TouchableOpacity>
             </View>
-
+            
             <SafeAreaView style={styles.gallery}>
                 <ScrollView >
                     <FlatList

@@ -42,6 +42,8 @@ public class MainApplication extends Application implements ReactApplication {
   }
 
 
+
+
   @Override
   public void onCreate() {
     super.onCreate();

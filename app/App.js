@@ -4,19 +4,24 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 //HOme
-import SettingComponent from './components/SettingComponent'
+import SettingComponent from './components/ProfileTab/SettingComponent'
 import PatternComponent from './components/PatternComponent'
 import Advertisement from './components/Advertisement'
-import ThemesComponent from './components/ThemesComponent'
+import ThemesComponent from './components/ThemesTab/ThemesComponent'
 //Auth 
 import SplashScreen from './components/Auth/SplashScreen'
 import LoginScreen from './components/Auth/LoginScreen'
 import RegisterScreen from './components/Auth/RegisterScreen'
 import ForgotPasswordScreen from './components/Auth/ForgotPasswordScreen'
-import tenten from './components/Auth/tenten'
+import Home from './components/HomeTab/Home'
 
 //Theme 
 import ThemeDetail from './components/ThemesTab/ThemeDetail'
+
+
+// Home 
+import Lesson from './components/HomeTab/Lesson'
+import Test from './components/HomeTab/Test'
 
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -65,6 +70,18 @@ function ThemesStackScreen() {
   );
 }
 
+const HomeStack = createStackNavigator();
+
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator initialRouteName="ThemeComponent">
+      <HomeStack.Screen name="Home" component={Home}  options={AuthOptions}/>
+      <HomeStack.Screen name="Lesson" component={Lesson}  options={AuthOptions}/>
+      <HomeStack.Screen name="Test" component={Test}  options={AuthOptions}/>
+    </HomeStack.Navigator>
+  );
+}
+
 function RootStack(props) {
 
   console.log("props.alarmID", props.props.alarmID);
@@ -72,7 +89,7 @@ function RootStack(props) {
     <Stack.Navigator
       initialRouteName={props.props.alarmID ? "SettingComponent" : "SettingComponent"}
     >
-      <Stack.Screen name="tenten" component={tenten} options={AuthOptions} />
+      <Stack.Screen name="Home" component={Home} options={AuthOptions} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} options={AuthOptions} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} options={AuthOptions} />
       <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={AuthOptions} />
@@ -122,7 +139,7 @@ function mainFlow() {
       />
       <Tab.Screen
         name="Home"
-        component={tenten}
+        component={HomeStackScreen}
         options={{
           tabBarLabel: 'Home',
           tabBarIcon: ({focused, color, size }) => (
@@ -132,7 +149,7 @@ function mainFlow() {
       />
       <Tab.Screen
         name="4"
-        component={tenten}
+        component={Home}
         options={{
           tabBarLabel: 'Chủ đề',
           tabBarIcon: ({color}) => (
@@ -142,7 +159,7 @@ function mainFlow() {
       />
       <Tab.Screen
         name="5"
-        component={tenten}
+        component={Home}
         options={{
           tabBarLabel: 'Notification',
           tabBarIcon: ({color}) => (
@@ -159,7 +176,7 @@ export default function App(props) {
   SplashScreen
   return (
     props.props.alarmID ?
-    tenten()
+    Home()
      :
     <Fragment>
       <NavigationContainer>

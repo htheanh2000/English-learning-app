@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "reset-cache": "react-native start --reset-cache",
+    "reset": "react-native start --reset-cache",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
@@ -11,9 +11,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@fawazahmed/react-native-read-more": "^1.0.8",
-    "@nozbe/watermelondb": "^0.20.0",
-    "@nozbe/with-observables": "^1.0.7",
+    "@babel/plugin-proposal-decorators": "^7.12.1",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/hooks": "^2.6.0",
     "@react-native-community/masked-view": "^0.1.10",
@@ -24,6 +22,7 @@
     "@react-navigation/native": "^5.7.6",
     "@react-navigation/stack": "^5.9.3",
     "@reduxjs/toolkit": "^1.4.0",
+    "css-tree": "1.0.0-alpha.39",
     "react": "16.9.0",
     "react-native": "0.61.1",
     "react-native-admob": "^2.0.0-beta.6",
@@ -36,6 +35,7 @@
     "react-native-lock-screen": "^1.0.1",
     "react-native-paper": "^4.3.0",
     "react-native-permissions": "^2.2.2",
+    "react-native-progress-circle": "^2.1.0",
     "react-native-read-more-text": "^1.1.2",
     "react-native-reanimated": "^1.13.1",
     "react-native-safe-area-context": "^3.1.8",

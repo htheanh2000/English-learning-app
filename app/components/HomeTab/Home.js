@@ -5,35 +5,37 @@ import RNExitApp from 'react-native-exit-app';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Quotes from '../../Data/Quotes.json'
 import Bg from '../../Data/Bg'
+import Modal from './Modal'
+import { Button } from 'react-native-paper';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
-const tenten = props => {
-    Timeslide.startService()
+const Home = props => {
+  const [showModal, setShowModal] = useState(false);
+
     const quote = Quotes[Math.floor(Math.random() * 10)]
     const bg = Bg[Math.floor(Math.random() * 10)]
 
   return (
     <View style={styles.container}>
-        <Image style={{width: screenWidth, height:screenHeight, opacity: .2}}
-            source={bg.uri}
+        <Image style={styles.image}
+            source={require('../../assets/map.jpg')}
         ></Image>
         
-        <View style={{position:"absolute"}}>
-          <Text style={styles.content}>"{quote.content}"</Text>
-          <Text style={styles.author}>-- {quote.author} --</Text>
-          <TouchableOpacity style={styles.icon} onPress={() =>  BackHandler.exitApp() } >
-             <AntDesign name= "heart"  color= "tomato" size={40} />
-             <Text style={{color:"#fff"}}>Click me to out app!</Text>
-          </TouchableOpacity>
-        </View>
-
-        
+        {
+          !showModal ?
+            <Button icon="camera" mode="contained" onPress={() => setShowModal(true)}>
+              Press me
+            </Button> : null
+        }
+        {
+          showModal ? <Modal/> : null
+        }
     </View>
   );
 };
-export default tenten;
+export default Home;
 
 const styles = StyleSheet.create({
   container: {
@@ -69,5 +71,10 @@ const styles = StyleSheet.create({
   icon :{
     alignItems:"center",
     justifyContent:"center",
+  },
+  image: {
+    width: screenWidth,
+    height: screenHeight,
+    position:"absolute"
   }
 });
