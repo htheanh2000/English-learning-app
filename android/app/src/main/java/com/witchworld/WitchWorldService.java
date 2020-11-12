@@ -1,4 +1,4 @@
-package com.timeslide;
+package com.witchworld;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -16,14 +16,14 @@ import android.content.IntentFilter;
 import android.util.Log;
 import com.facebook.react.HeadlessJsTaskService;
 
-public class TimeSlideService extends Service {
-    private String TAG = "TimeSlideService";
+public class WitchWorldService extends Service {
+    private String TAG = "WitchWorldService";
     public static boolean isServiceRunning;
     private static final int SERVICE_NOTIFICATION_ID = 12345;
-    private static final String CHANNEL_ID = "TimeSlide";
+    private static final String CHANNEL_ID = "WitchWorld";
     private ScreenLockReceiver screenLockReceiver;
 
-     public TimeSlideService() {
+     public WitchWorldService() {
         isServiceRunning = false;
         screenLockReceiver = new ScreenLockReceiver();
     }
@@ -33,7 +33,7 @@ public class TimeSlideService extends Service {
         @Override
         public void run() {
             Context context = getApplicationContext();
-            Intent myIntent = new Intent(context, TimeSlideEventService.class);
+            Intent myIntent = new Intent(context, WitchWorldEventService.class);
             context.startService(myIntent);
             HeadlessJsTaskService.acquireWakeLockNow(context);
             handler.postDelayed(this, 2000);
@@ -44,7 +44,7 @@ public class TimeSlideService extends Service {
         // the NotificationChannel class is new and not in the support library
         // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "TimeSlide", importance);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "WitchWorld", importance);
             channel.setDescription("CHANEL DESCRIPTION");
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
@@ -88,7 +88,7 @@ public class TimeSlideService extends Service {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("TimeSlide service")
+            .setContentTitle("WitchWorld service")
             .setContentText("Running…")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(contentIntent)

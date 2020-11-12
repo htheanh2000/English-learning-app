@@ -1,4 +1,4 @@
-package com.timeslide;
+package com.witchworld;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
@@ -10,12 +10,12 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class TimeSlidePackage implements ReactPackage {
+public class WitchWorldPackage implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
-                new TimeSlideModule(reactContext)
+                new WitchWorldModule(reactContext)
         );
     }
 

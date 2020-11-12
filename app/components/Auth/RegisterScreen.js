@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import Loader from './Loader';
 import { Dimensions } from "react-native";
+import auth from '@react-native-firebase/auth';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -40,10 +41,27 @@ const RegisterScreen = props => {
         }
         const user = {
             username: username,
-            password:password
+            password: password
         }
-        await AsyncStorage.setItem("user", JSON.stringify(user))
-        props.navigation.navigate("SettingComponent")
+
+        auth()
+            .createUserWithEmailAndPassword(username,password)
+            .then(() => {
+                console.log('User account created & signed in!');
+                 AsyncStorage.setItem("user", JSON.stringify(user))
+            })
+            .catch(error => {
+                if (error.code === 'auth/email-already-in-use') {
+                    console.log('That email address is already in us    e!');
+                    log("aa", )
+                }
+
+                if (error.code === 'auth/invalid-email') {
+                    console.log('That email address is invalid!');
+                }
+
+                console.error(error);
+            });
     };
 
     if (isRegistraionSuccess) {
@@ -102,7 +120,7 @@ const RegisterScreen = props => {
                     {errortext != '' ? (
                         <Text style={styles.errorTextStyle}> {errortext} </Text>
                     ) : null}
-                    
+
                     <TouchableOpacity
                         style={styles.buttonStyle}
                         activeOpacity={0.5}
@@ -127,13 +145,13 @@ const styles = StyleSheet.create({
     buttonStyle: {
         flex: 1,
         color: 'white',
-        height:40,
-        marginRight:60,
-        marginLeft:60,
-        marginTop:10,
-        marginBottom:10,
-        alignItems:"center",
-        justifyContent:"center",
+        height: 40,
+        marginRight: 60,
+        marginLeft: 60,
+        marginTop: 10,
+        marginBottom: 10,
+        alignItems: "center",
+        justifyContent: "center",
         borderWidth: 1,
         borderRadius: 30,
         borderColor: 'white',
@@ -143,7 +161,7 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         paddingVertical: 10,
         fontSize: 16,
-        
+
     },
     inputStyle: {
         flex: 1,

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "955754066617",
+    "firebase_url": "https://witchworld-9c8fa.firebaseio.com",
+    "project_id": "witchworld-9c8fa",
+    "storage_bucket": "witchworld-9c8fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955754066617:android:4ae2d75af1225ab603e168",
+        "android_client_info": {
+          "package_name": "com.witchworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "955754066617-oq1sfqnsgfhbf2d3nopaij88g08leec6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgTotf91CRxezVNfl0wGxRjjA1fKfYYIc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "955754066617-oq1sfqnsgfhbf2d3nopaij88g08leec6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

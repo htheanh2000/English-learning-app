@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'TimeSlide' do
-  # Pods for TimeSlide
+target 'WitchWorld' do
+  # Pods for WitchWorld
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "../node_modules/react-native/Libraries/RCTRequired"
@@ -37,7 +37,7 @@ target 'TimeSlide' do
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
-  target 'TimeSlideTests' do
+  target 'WitchWorldTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -48,10 +48,10 @@ target 'TimeSlide' do
 
 end
 
-target 'TimeSlide-tvOS' do
-  # Pods for TimeSlide-tvOS
+target 'WitchWorld-tvOS' do
+  # Pods for WitchWorld-tvOS
 
-  target 'TimeSlide-tvOSTests' do
+  target 'WitchWorld-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end

@@ -36,10 +36,4 @@ function WrapApp(props){
   )
 }
 
-
-const Timeslide =async () => {
-	// console.log('Receiving TimeSlide!');
-};
-
-AppRegistry.registerHeadlessTask('TimeSlide', () => Timeslide);
 AppRegistry.registerComponent(appName, () => WrapApp);

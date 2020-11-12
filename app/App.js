@@ -82,14 +82,12 @@ function HomeStackScreen() {
   );
 }
 
-function RootStack(props) {
+function Authen(props) {
 
   console.log("props.alarmID", props.props.alarmID);
   return (
     <Stack.Navigator
-      initialRouteName={props.props.alarmID ? "SettingComponent" : "SettingComponent"}
     >
-      <Stack.Screen name="Home" component={Home} options={AuthOptions} />
       <Stack.Screen name="SplashScreen" component={SplashScreen} options={AuthOptions} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} options={AuthOptions} />
       <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={AuthOptions} />
@@ -175,13 +173,10 @@ function mainFlow() {
 export default function App(props) {
   SplashScreen
   return (
-    props.props.alarmID ?
-    Home()
-     :
     <Fragment>
       <NavigationContainer>
-        {/* {RootStack(props)} */}
-        {mainFlow()}
+        {Authen(props)}
+        {/* {mainFlow()} */}
       </NavigationContainer>
     </Fragment>
   )

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {View,Text, StyleSheet,Image,Dimensions,TouchableOpacity,BackHandler } from 'react-native';
-import Timeslide from '../../../Timeslide'
 import RNExitApp from 'react-native-exit-app';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Quotes from '../../Data/Quotes.json'

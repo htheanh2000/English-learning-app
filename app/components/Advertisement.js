@@ -20,8 +20,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { useAppState, useBackHandler } from '@react-native-community/hooks'
 import RNExitApp from 'react-native-exit-app';
 
-const BannerTimeSlide = ({ style, title, children, ...props }) => (
-  <View {...props} style={[styles.TimeSlide, style]}>
+const BannerWitchWorld = ({ style, title, children, ...props }) => (
+  <View {...props} style={[styles.WitchWorld, style]}>
     <Text style={styles.title}>{title}</Text>
     <View>{children}</View>
   </View>
@@ -85,12 +85,12 @@ export default function Advertisement(props) {
         textStyle={styles.spinnerTextStyle}
       />
 {      /* <ScrollView>
-        <BannerTimeSlide title="Rewarded">
+        <BannerWitchWorld title="Rewarded">
           <Button
             title="Show Rewarded Video and preload next"
             onPress={this.showRewarded}
           />
-        </BannerTimeSlide>
+        </BannerWitchWorld>
       </ScrollView> */}
       </View>
     );
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: Platform.OS === 'ios' ? 30 : 10,
   },
-  TimeSlide: {
+  WitchWorld: {
     paddingVertical: 10,
   },
   title: {

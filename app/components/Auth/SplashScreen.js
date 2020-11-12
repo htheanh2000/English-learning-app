@@ -11,7 +11,7 @@ const SplashScreen = props => {
      
       AsyncStorage.getItem('user').then(value =>
         props.navigation.replace(
-          value ? 'SettingComponent' : 'SettingComponent'
+          value ? 'LoginScreen' : 'LoginScreen'
         )
       );
     }, 3000);

@@ -1,4 +1,4 @@
-package com.timeslide;
+package com.witchworld;
 
 import android.content.Intent;
 
@@ -8,12 +8,12 @@ import com.facebook.react.bridge.ReactMethod;
 
 import javax.annotation.Nonnull;
 
-public class TimeSlideModule extends ReactContextBaseJavaModule {
+public class WitchWorldModule extends ReactContextBaseJavaModule {
 
-    public static final String REACT_CLASS = "TimeSlide";
+    public static final String REACT_CLASS = "WitchWorld";
     private static ReactApplicationContext reactContext;
 
-    public TimeSlideModule(@Nonnull ReactApplicationContext reactContext) {
+    public WitchWorldModule(@Nonnull ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
     }
@@ -26,11 +26,11 @@ public class TimeSlideModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startService() {
-        this.reactContext.startService(new Intent(this.reactContext, TimeSlideService.class));
+        this.reactContext.startService(new Intent(this.reactContext, WitchWorldService.class));
     }
 
     @ReactMethod
     public void stopService() {
-        this.reactContext.stopService(new Intent(this.reactContext, TimeSlideService.class));
+        this.reactContext.stopService(new Intent(this.reactContext, WitchWorldService.class));
     }
 }

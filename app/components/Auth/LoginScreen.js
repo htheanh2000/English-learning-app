@@ -15,7 +15,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Loader from './Loader';
 import { mainStyles } from '../../styles/mainStyles'
 import {Dimensions,DeviceEventEmitter } from "react-native";
-import TimeSlide from '../../../Timeslide';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -29,25 +28,9 @@ const LoginScreen = props => {
 
 
   const handleSubmitPress = async() => {
-    console.log("aaaaaaaaaaaaaaa");
-    TimeSlide.startService()
+    WitchWorld.startService()
     setErrortext('');
-    // if (!userEmail) {
-    //   alert('Please fill Email');
-    //   return;
-    // }
-    // if (!userPassword) {
-    //   alert('Please fill Password');
-    //   return;
-    // }
-    // if (userEmail === "admin" && userPassword === "1") {
-    //   setLoading(true);
-    //   props.navigation.navigate('SettingComponent')
-      
-    // }
-    // else {
-    //   setErrortext("Wrong username or password! Please fill it again")
-    // }
+   
     const user = {
       username:"test",
       password: "test"

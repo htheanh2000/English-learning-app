@@ -1,4 +1,4 @@
-package com.timeslide;
+package com.witchworld;
 
 import android.app.Application;
 import android.content.Context;
@@ -24,9 +24,9 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
           List<ReactPackage> packages = new PackageList(this).getPackages();
-          // Packages that cannot be autolinked yet can be added manually here, for TimeSlide:
+          // Packages that cannot be autolinked yet can be added manually here, for WitchWorld:
           // packages.add(new MyReactNativePackage());
-          packages.add(new TimeSlidePackage());
+          packages.add(new WitchWorldPackage());
           return packages;
         }
 

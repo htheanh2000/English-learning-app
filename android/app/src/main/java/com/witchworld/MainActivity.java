@@ -1,4 +1,4 @@
-package com.timeslide;
+package com.witchworld;
 import com.facebook.react.ReactActivity;
 import javax.annotation.Nullable;
 import android.os.Bundle;
@@ -21,7 +21,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "TimeSlide";
+    return "WitchWorld";
   }
 
   public static class AlarmActivityDelegate extends ReactActivityDelegate {
