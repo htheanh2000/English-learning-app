@@ -11,38 +11,105 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux'
 import AsyncStorage from '@react-native-community/async-storage';
 import Loader from './Loader';
 import { mainStyles } from '../../styles/mainStyles'
-import {Dimensions,DeviceEventEmitter } from "react-native";
+import { Dimensions } from "react-native";
+import { login, setStatus } from '../../store/user'
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
+function logCurrentStorage() {
+  AsyncStorage.getAllKeys().then((keyArray) => {
+    AsyncStorage.multiGet(keyArray).then((keyValArray) => {
+      let myStorage: any = {};
+      for (let keyVal of keyValArray) {
+        myStorage[keyVal[0]] = keyVal[1]
+      }
+
+      console.log('CURRENT STORAGE: ', myStorage);
+    })
+  });
+}
 const LoginScreen = props => {
+  const dispatch = useDispatch()
+  // const { user } = useSelector(state => state.user)
+
   let [userEmail, setUserEmail] = useState('');
   let [userPassword, setUserPassword] = useState('');
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState('');
   const [LogLocation, setLogLocation] = useState("false");
 
-
-  const handleSubmitPress = async() => {
-    WitchWorld.startService()
+  const handleSubmitPress = async () => {
     setErrortext('');
-   
-    const user = {
-      username:"test",
-      password: "test"
+    setLoading(true)
+    if (!userEmail || !userPassword) {
+      setErrortext('Email/Password can\'t be null');
+      setLoading(false)
+      return
     }
-    await AsyncStorage.setItem("user", JSON.stringify(user))
-    props.navigation.navigate('SettingComponent')
-  };
 
- 
+    auth()
+      .signInWithEmailAndPassword(userEmail, userPassword)
+      .then((iUser) => {
+        const user = auth().currentUser
+        if (user) {
+          const userId = iUser.user.uid;
+          console.log("userId",userId);
+          database()
+            .ref('users/' + userId)
+            .once('value')
+            .then(snapshot => {
+              console.log("snapshopt", snapshot.val());
+              dispatch(login(snapshot.val()))
+            });
+          setLoading(false)
+
+        }
+        else {
+          console.log("You haven't login");
+          setLoading(false)
+
+        }
+      })
+      .catch(error => {
+        if (error.code === 'auth/invalid-email') {
+          console.log('=====auth/invalid-email======');
+          setErrortext("/invalid-email")
+        }
+        if (error.code === 'auth/user-disabled') {
+          console.log('=====auth/user-disabled======');
+          setErrortext("You account disabled by some resome")
+          // return dispatch(loginSuccess())
+        }
+        if (error.code === 'auth/user-not-found') {
+          console.log('=====auth/user-not-found======');
+          setErrortext("This account haven't registered")
+          // return dispatch(loginSuccess())
+        }
+        if (error.code === 'auth/wrong-password') {
+          console.log('=====auth/wrong-password=====');
+          setErrortext("wrong password")
+        }
+
+        console.error(error);
+        setLoading(false)
+
+      });
+
+    return
+  }
+
+
   return (
     <View style={mainStyles.mainBody}>
       <Loader loading={loading} />
+
       <ScrollView keyboardShouldPersistTaps="handled">
         <View style={{ marginTop: 200 }}>
           <KeyboardAvoidingView enabled>
@@ -54,7 +121,7 @@ const LoginScreen = props => {
                 placeholderTextColor="#F6F6F7"
                 autoCapitalize="none"
                 keyboardType="email-address"
-                returnKeyType="next"
+                returnKeyType="text"
                 blurOnSubmit={false}
               />
             </View>
@@ -74,14 +141,13 @@ const LoginScreen = props => {
               <Text style={styles.errorTextStyle}> {errortext} </Text>
             ) : null}
 
-            <View style={{width:screenWidth, flexDirection:"row", justifyContent:"center"}}>
+            <View style={{ width: screenWidth, flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
-                onPress={handleSubmitPress}>
+                onPress={() => handleSubmitPress()}>
                 <Text style={styles.buttonTextStyle}>LOGIN</Text>
               </TouchableOpacity>
-
               <TouchableOpacity
                 style={styles.buttonStyle}
                 activeOpacity={0.5}
@@ -90,11 +156,11 @@ const LoginScreen = props => {
               </TouchableOpacity>
             </View>
 
-            <Text
+            {/* <Text
               style={styles.registerTextStyle}
               onPress={() => props.navigation.navigate('ForgotPasswordScreen')}>
-              Sorry! I'm forgot my pasord {LogLocation}
-              </Text>
+              Sorry! I'm forgot my pasord 
+            </Text> */}
           </KeyboardAvoidingView>
         </View>
       </ScrollView>
@@ -122,13 +188,13 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     borderWidth: 1,
     height: 35,
-    width:120,
+    width: 120,
     borderRadius: 30,
 
-    justifyContent:"center",
+    justifyContent: "center",
     alignItems: 'center',
-    marginLeft:20,
-    marginRight:20,
+    marginLeft: 20,
+    marginRight: 20,
     marginTop: 20,
     marginBottom: 20,
   },

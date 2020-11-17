@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-
-//Import all required component
 import {
     StyleSheet,
     TextInput,
@@ -15,77 +13,76 @@ import {
 import Loader from './Loader';
 import { Dimensions } from "react-native";
 import auth from '@react-native-firebase/auth';
-
+import database from '@react-native-firebase/database';
+import { useDispatch, useSelector } from 'react-redux'
+import { login, setStatus } from '../../store/user'
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 import { mainStyles } from '../../styles/mainStyles'
 import AsyncStorage from '@react-native-community/async-storage';
 
 const RegisterScreen = props => {
+    const dispatch = useDispatch()
     let [username, setUsername] = useState('');
+    let [email, setEmail] = useState('');
     let [password, setPassword] = useState('');
 
     let [loading, setLoading] = useState(false);
     let [errortext, setErrortext] = useState('');
-    let [isRegistraionSuccess, setIsRegistraionSuccess] = useState(false);
 
     const handleSubmitButton = async () => {
-        setErrortext('');
+        setLoading(true)
+
         if (!username) {
-            alert('Please fill ussername');
+            setErrortext('Please fill ussername');
             return;
         }
         if (!password) {
-            alert('Please fill password');
+            setErrortext('Please fill password');
             return;
-        }
-        const user = {
-            username: username,
-            password: password
         }
 
         auth()
-            .createUserWithEmailAndPassword(username,password)
-            .then(() => {
+            .createUserWithEmailAndPassword(email, password)
+            .then((user) => {
                 console.log('User account created & signed in!');
-                 AsyncStorage.setItem("user", JSON.stringify(user))
+
+                const newUser = {
+                    level: 1,
+                    rank: "UnRank",
+                    username: username,
+                    online: true,
+                    exp: 0,
+                    history: []
+                }
+                if (auth().currentUser) {
+                    userId = auth().currentUser.uid;
+                    console.log("userId", userId);
+                    if (userId) {
+                        database().ref('users/' + userId).set(newUser)
+                    }
+                }
+                AsyncStorage.setItem("user", JSON.stringify(newUser))
+                dispatch(login(newUser))
+                setLoading(false)
             })
             .catch(error => {
                 if (error.code === 'auth/email-already-in-use') {
-                    console.log('That email address is already in us    e!');
-                    log("aa", )
+                    setErrortext('That email address is already in use!');
+                    setLoading(false)
+                    return
                 }
 
                 if (error.code === 'auth/invalid-email') {
-                    console.log('That email address is invalid!');
+                    setErrortext('That email address is invalid!');
+                    setLoading(false)
+                    return
                 }
 
                 console.error(error);
             });
     };
 
-    if (isRegistraionSuccess) {
-        return (
-            <View
-                style={{
-                    flex: 1,
-                    backgroundColor: '#307ecc',
-                    justifyContent: 'center',
-                }}>
-                <Image
-                    source={require('../../assets/wallpaper.jpg')}
-                    style={{ height: 150, resizeMode: 'contain', alignSelf: 'center' }}
-                />
-                <Text style={styles.successTextStyle}>Registration Successful.</Text>
-                <TouchableOpacity
-                    style={styles.buttonStyle}
-                    activeOpacity={0.5}
-                    onPress={() => props.navigation.navigate('LoginScreen')}>
-                    <Text style={styles.buttonTextStyle}>Login Now</Text>
-                </TouchableOpacity>
-            </View>
-        );
-    }
     return (
         <View style={mainStyles.mainBody}>
             <Loader loading={loading} />
@@ -96,6 +93,20 @@ const RegisterScreen = props => {
                             <TextInput
                                 style={styles.inputStyle}
                                 onChangeText={username => setUsername(username)}
+                                placeholder="Enter character name: "
+                                placeholderTextColor="#F6F6F7"
+                                keyboardType="default"
+                                returnKeyType="next"
+                                blurOnSubmit={false}
+                            />
+                        </View>
+                    </View>
+
+                    <View>
+                        <View style={styles.SectionStyle}>
+                            <TextInput
+                                style={styles.inputStyle}
+                                onChangeText={email => setEmail(email)}
                                 placeholder="Enter username"
                                 placeholderTextColor="#F6F6F7"
                                 keyboardType="email-address"
@@ -112,7 +123,8 @@ const RegisterScreen = props => {
                             placeholder="Enter password"
                             placeholderTextColor="#F6F6F7"
                             autoCapitalize="sentences"
-                            returnKeyType="password"
+                            returnKeyType="default"
+                            secureTextEntry={true}
                             blurOnSubmit={false}
                         />
                     </View>
@@ -126,6 +138,13 @@ const RegisterScreen = props => {
                         activeOpacity={0.5}
                         onPress={handleSubmitButton}>
                         <Text style={styles.buttonTextStyle}>REGISTER</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.buttonStyle}
+                        activeOpacity={0.5}
+                        onPress={() => props.navigation.navigate("LoginScreen")}>
+                        <Text style={styles.buttonTextStyle}>LOGIN</Text>
                     </TouchableOpacity>
                 </KeyboardAvoidingView>
             </ScrollView>
@@ -146,8 +165,8 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'white',
         height: 40,
-        marginRight: 60,
-        marginLeft: 60,
+        marginRight: 100,
+        marginLeft: 100,
         marginTop: 10,
         marginBottom: 10,
         alignItems: "center",
@@ -173,7 +192,7 @@ const styles = StyleSheet.create({
         borderColor: 'white',
     },
     errorTextStyle: {
-        color: 'red',
+        color: '#fff',
         textAlign: 'center',
         fontSize: 14,
     },

@@ -1,12 +1,10 @@
 import React, { Button, Fragment, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, PermissionsAndroid } from "react-native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useDispatch, useSelector } from 'react-redux'
 //HOme
 import SettingComponent from './components/ProfileTab/SettingComponent'
-import PatternComponent from './components/PatternComponent'
-import Advertisement from './components/Advertisement'
 import ThemesComponent from './components/ThemesTab/ThemesComponent'
 //Auth 
 import SplashScreen from './components/Auth/SplashScreen'
@@ -28,6 +26,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { BottomNavigation } from 'react-native-paper';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-community/async-storage';
+import {login,setStatus} from './store/user'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -64,8 +64,8 @@ const ThemesStack = createStackNavigator();
 function ThemesStackScreen() {
   return (
     <ThemesStack.Navigator initialRouteName="ThemeComponent">
-      <ThemesStack.Screen name="ThemeComponent" component={ThemesComponent}  options={AuthOptions}/>
-      <ThemesStack.Screen name="ThemeDetail" component={ThemeDetail}  options={AuthOptions}/>
+      <ThemesStack.Screen name="ThemeComponent" component={ThemesComponent} options={AuthOptions} />
+      <ThemesStack.Screen name="ThemeDetail" component={ThemeDetail} options={AuthOptions} />
     </ThemesStack.Navigator>
   );
 }
@@ -75,20 +75,17 @@ const HomeStack = createStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator initialRouteName="ThemeComponent">
-      <HomeStack.Screen name="Home" component={Home}  options={AuthOptions}/>
-      <HomeStack.Screen name="Lesson" component={Lesson}  options={AuthOptions}/>
-      <HomeStack.Screen name="Test" component={Test}  options={AuthOptions}/>
+      <HomeStack.Screen name="Home" component={Home} options={AuthOptions} />
+      <HomeStack.Screen name="Lesson" component={Lesson} options={AuthOptions} />
+      <HomeStack.Screen name="Test" component={Test} options={AuthOptions} />
     </HomeStack.Navigator>
   );
 }
 
-function Authen(props) {
-
-  console.log("props.alarmID", props.props.alarmID);
+function Authen() {
   return (
     <Stack.Navigator
     >
-      <Stack.Screen name="SplashScreen" component={SplashScreen} options={AuthOptions} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} options={AuthOptions} />
       <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={AuthOptions} />
       <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} options={AuthOptions} />
@@ -99,20 +96,21 @@ function Authen(props) {
 
 
 function mainFlow() {
+  const dispatch = useDispatch()
   return (
     <Tab.Navigator
-        initialRouteName="Home"
-        tabBarOptions={{
-          activeTintColor: '#14274e',
-          inactiveTintColor:"#9ba4b4",
-          labelStyle: {
-            fontSize: 12,
-          },
-          style: {
-            backgroundColor: '#f1f6f9',
-          },
-        }}
-     
+      initialRouteName="Home"
+      tabBarOptions={{
+        activeTintColor: '#14274e',
+        inactiveTintColor: "#9ba4b4",
+        labelStyle: {
+          fontSize: 12,
+        },
+        style: {
+          backgroundColor: '#f1f6f9',
+        },
+      }}
+
     >
       <Tab.Screen
         name="1"
@@ -124,7 +122,7 @@ function mainFlow() {
           ),
         }}
       />
-      
+
       <Tab.Screen
         name="Themes"
         component={ThemesStackScreen}
@@ -140,8 +138,8 @@ function mainFlow() {
         component={HomeStackScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: ({focused, color, size }) => (
-            <MaterialCommunityIcons name="home-circle"  color={ focused ?"#03c04a" : "tomato"} size={32} />
+          tabBarIcon: ({ focused, color, size }) => (
+            <MaterialCommunityIcons name="home-circle" color={focused ? "#03c04a" : "tomato"} size={32} />
           ),
         }}
       />
@@ -150,7 +148,7 @@ function mainFlow() {
         component={Home}
         options={{
           tabBarLabel: 'Chủ đề',
-          tabBarIcon: ({color}) => (
+          tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="diamond-outline" color={color} size={26} />
           ),
         }}
@@ -160,7 +158,7 @@ function mainFlow() {
         component={Home}
         options={{
           tabBarLabel: 'Notification',
-          tabBarIcon: ({color}) => (
+          tabBarIcon: ({ color }) => (
             <Ionicons name="notifications" color={color} size={26} />
           ),
         }}
@@ -171,13 +169,36 @@ function mainFlow() {
 }
 
 export default function App(props) {
-  SplashScreen
+
+  const [isLogined, setIsLogined] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const isUser = useSelector(state => state.user)
+  useEffect(() => {
+    AsyncStorage.getItem('user')
+      .then((res) => {
+        if (res) {
+          setIsLogined(true)
+        }
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 3000);
+      })
+      .catch((e) => console.log("e", e))
+  })
+  // SplashScreen
   return (
+
     <Fragment>
-      <NavigationContainer>
-        {Authen(props)}
-        {/* {mainFlow()} */}
-      </NavigationContainer>
+      {
+        isLoading ? 
+        <SplashScreen /> : 
+        <NavigationContainer>
+          {
+             isUser.user ||  isLogined ? mainFlow() : Authen()
+          }
+        </NavigationContainer>
+      }
+
     </Fragment>
   )
 }

@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { ActivityIndicator, ImageBackground,View,Text, StyleSheet, Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import { withTheme } from 'react-native-paper';
+
 
 const SplashScreen = props => {
+
   let [animating, setAnimating] = useState(true);
 
   useEffect(() => {
     setTimeout(() => {
       setAnimating(false);
-     
-      AsyncStorage.getItem('user').then(value =>
-        props.navigation.replace(
-          value ? 'LoginScreen' : 'LoginScreen'
-        )
-      );
     }, 3000);
   }, []);
 
   return (
     <View style={styles.container}>
+      
      <Text style={{fontSize:24, fontWeight:"bold", color:"#fff"}}>Wellcome to my app</Text>
       <ActivityIndicator
         animating={animating}
@@ -32,14 +30,14 @@ const SplashScreen = props => {
     
   );
 };
-export default SplashScreen;
+export default withTheme(SplashScreen);;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#000',
+    backgroundColor: "#000",
   },
   activityIndicator: {
     alignItems: 'center',

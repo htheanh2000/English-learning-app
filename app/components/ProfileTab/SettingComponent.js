@@ -1,87 +1,71 @@
 import React, { Component, Fragment, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { createScreen } from '../../state/screens/actions'
 import {
   StyleSheet,
   View,
   Text,
   Dimensions,
-  TouchableOpacity,
   Image
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import ProgressCircle from 'react-native-progress-circle'
+import {useSelector} from 'react-redux'
+import { Avatar } from 'react-native-paper';
+
 const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
-import ProgressCircle from 'react-native-progress-circle'
 
-import { Appbar } from 'react-native-paper';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { Avatar } from 'react-native-paper';
 function SettingComponent() {
+  const user = useSelector(state => state.user)
 
-  let [source, setSource] = useState('');
-  const [theme, setTheme] = useState('value');
-  const [isSwitchOn, setIsSwitchOn] = useState(false);
-
+  useEffect(()=> {
+    console.log("state", user);
+  })
   const navigation = useNavigation()
-  const selectWallpaper = async () => {
-    console.log("selectWallpaper");
-    var options = {
-      title: 'Select Image',
-      customButtons: [
-        { name: 'customOptionKey', title: 'Choose Photo from .... ' },
-      ],
-      storageOptions: {
-        skipBackup: true,
-        path: 'images',
-      },
-    };
+  // const selectWallpaper = async () => {
+  //   var options = {
+  //     title: 'Select Image',
+  //     customButtons: [
+  //       { name: 'customOptionKey', title: 'Choose Photo from .... ' },
+  //     ],
+  //     storageOptions: {
+  //       skipBackup: true,
+  //       path: 'images',
+  //     },
+  //   };
 
-    const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+  //   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
-    ImagePicker.showImagePicker(options, async response => {
-      console.log('Response = ', response);
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-        alert(response.customButton);
-      } else {
-        let source = 'data:image/jpeg;base64,' + response.data
-        setSource('data:image/jpeg;base64,' + response.data)
-        console.log("AsyncStorage src", source);
-        await AsyncStorage.setItem("wallpaper", JSON.stringify(source))
-        const img = await AsyncStorage.getItem("wallpaper")
-        console.log("img", img);
-      }
-    });
-  }
-  const setThemef = (t) => {
-    setTheme(t)
-    console.log("theme", theme);
-  }
-
-  const showPopUp = () => {
-
-  }
+  //   ImagePicker.showImagePicker(options, async response => {
+  //     console.log('Response = ', response);
+  //     if (response.didCancel) {
+  //       console.log('User cancelled image picker');
+  //     } else if (response.error) {
+  //       console.log('ImagePicker Error: ', response.error);
+  //     } else if (response.customButton) {
+  //       console.log('User tapped custom button: ', response.customButton);
+  //       alert(response.customButton);
+  //     } else {
+  //       let source = 'data:image/jpeg;base64,' + response.data
+  //       setSource('data:image/jpeg;base64,' + response.data)
+  //       console.log("AsyncStorage src", source);
+  //       await AsyncStorage.setItem("wallpaper", JSON.stringify(source))
+  //       const img = await AsyncStorage.getItem("wallpaper")
+  //       console.log("img", img);
+  //     }
+  //   });
 
   return (
     <View style={styles.container}>
+      {/* {console.log("user", user)} */}
       <View style={styles.title}>
         <Image style={styles.khung} source={require('../../assets/test.gif')}></Image>
-
-        <Text style={styles.textName}>Zero</Text>
-        <Text style={styles.textContent}>Level 13</Text>
+        <Text style={styles.textName}>{user.username}</Text>
+        <Text style={styles.textContent}>Level: {user.level}</Text>
       </View>
 
       <View style={styles.modalView}>
-
-        {/* <Text style={styles.heroTitle}>Hero profile</Text> */}
         <View style={{ textAlign: "center" }}>
           <ProgressCircle
             percent={66}
@@ -91,14 +75,14 @@ function SettingComponent() {
             shadowColor="#f073e1"
             bgColor="#fff"
           >
-            <Text style={{ fontSize: 18 }}>{'66%'}</Text>
+            <Text style={{ fontSize: 18 }}>{user.exp}%</Text>
           </ProgressCircle>
-          <Text style={[styles.nextLevel, { paddingTop: 10 }]}>30+ to next level</Text>
+          <Text style={[styles.nextLevel, { paddingTop: 10 }]}>{100 - user.exp}+ to next level</Text>
 
         </View>
         <View>
           <Image style={styles.image} source={require('../../assets/rank.png')}></Image>
-          <Text style={styles.nextLevel}>Diamond</Text>
+          <Text style={styles.nextLevel}>{user.rank}</Text>
         </View>
 
       </View>
@@ -139,7 +123,6 @@ const styles = StyleSheet.create({
   item: {
     width: widthR,
     height: 50,
-    // justifyContent:"center",
     alignItems: "center",
     padding: 10,
     borderBottomWidth: 2,

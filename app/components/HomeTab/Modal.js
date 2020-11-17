@@ -3,35 +3,59 @@ import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, BackHandle
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Button } from 'react-native-paper';
-
+import storage from '@react-native-firebase/storage';
 import { useNavigation } from '@react-navigation/native';
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 const Modal = props => {
+
+    const { map, star, mapLevel } = props
+    console.log("props", props);
     const navigation = useNavigation()
+    const [url, setUrl] = useState(null)
+    const getImg = async () => {
+        const url = await storage()
+            .ref("Maps/" + mapLevel.toString() + "/" + map.ImgUrl)
+            .getDownloadURL()
+        setUrl(url)
+        console.log("url", url);
+    }
+    getImg()
+
     return (
         <View style={styles.container}>
-            <View style={styles.logo}>
-                <MaterialCommunityIcons name="fruit-grapes" size={60} color="#54B0FF"></MaterialCommunityIcons>
-            </View>
+            {/* <View style={styles.logo}> */}
+                {
+                    url ?
+                        <Image style={styles.logo} source={{
+                            uri: url,
+                        }}></Image> : null
+                }
+            {/* </View> */}
 
             <View style={styles.titleView}>
-                <Text style={styles.title}>FRUIT</Text>
-                <Text style={styles.content}>In this mission, you will learn about different pieces of fruits and learn to tell. Good luck!</Text>
+                <Text style={styles.title}>{map.Name}</Text>
+                <Text style={styles.content}>{map.Content}</Text>
             </View>
             <View style={styles.bottomView}>
                 <View style={styles.star}>
-                    <AntDesign name="star" style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
-                    <AntDesign name="staro" style={{ padding: 5, marginTop: -20 }} size={40} color="#FFd700"></AntDesign>
-                    <AntDesign name="staro" style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
+                    <AntDesign name={star >= 1 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
+                    <AntDesign name={star >= 2 ? "star" : "staro"} style={{ padding: 5, marginTop: -20 }} size={40} color="#FFd700"></AntDesign>
+                    <AntDesign name={star >= 3 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
                 </View>
 
                 <View style={styles.btnView}>
-                    <Button style={[styles.btn, {backgroundColor: "#3fd951"}]} icon="arm-flex"  mode="contained" onPress={() => navigation.navigate('Lesson')}>
+                    <Button style={[styles.btn, { backgroundColor: "#3fd951" }]} icon="arm-flex" mode="contained"
+                        onPress={() => navigation.navigate('Lesson', {
+                            map: map
+                        })}>
                         Learn
                     </Button>
-                    <Button style={[styles.btn, {backgroundColor: "#47c9f5"}]} icon="axe" mode="contained"  onPress={() => navigation.navigate('Test')}>
+                    <Button style={[styles.btn, { backgroundColor: "#47c9f5" }]} icon="axe" mode="contained"
+                        onPress={() => navigation.navigate('Test', {
+                            map: map
+                        })}>
                         Test
                     </Button>
                 </View>
@@ -92,11 +116,16 @@ const styles = StyleSheet.create({
         padding: 20
     },
     btnView: {
-        flexDirection:"row"
+        flexDirection: "row"
     },
     btn: {
-        borderColor: "red",
         margin: 5,
-        backgroundColor: "red"
+        backgroundColor: "red",
+        color: "#fff"
+    },
+    image: {
+        width:100,
+        height:100,
+        borderRadius: 100
     }
 });

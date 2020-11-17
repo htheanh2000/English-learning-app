@@ -6,11 +6,10 @@ import {AppRegistry} from 'react-native';
 import {name as appName} from './app.json';
 import React, { Component } from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { Provider } from 'react-redux';
 import App from './app/App';
-import store from './app/state'
-
-
+import store from './app/store/store'
+import { Provider } from 'react-redux'
+import {myTheme} from './app/styles/themes'
 
 if (__DEV__) {
 	require('./app/ReactotronConfig');
@@ -29,7 +28,7 @@ if (__DEV__) {
 function WrapApp(props){
   return (
     <Provider store={store}>
-        <PaperProvider>
+        <PaperProvider theme={myTheme}>
           	<App props={props} />
         </PaperProvider>
     </Provider>
