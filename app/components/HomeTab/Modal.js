@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { Button } from 'react-native-paper';
+import { Button } from 'react-native';
 import storage from '@react-native-firebase/storage';
 import { useNavigation } from '@react-navigation/native';
 const screenWidth = Math.round(Dimensions.get('window').width);
@@ -15,6 +15,7 @@ const Modal = props => {
     const navigation = useNavigation()
     const [url, setUrl] = useState(null)
     const getImg = async () => {
+        console.log("link ", "Maps/" + mapLevel.toString() + "/" + map.ImgUrl);
         const url = await storage()
             .ref("Maps/" + mapLevel.toString() + "/" + map.ImgUrl)
             .getDownloadURL()
@@ -26,12 +27,12 @@ const Modal = props => {
     return (
         <View style={styles.container}>
             {/* <View style={styles.logo}> */}
-                {
-                    url ?
-                        <Image style={styles.logo} source={{
-                            uri: url,
-                        }}></Image> : null
-                }
+            {
+                url ?
+                    <Image style={styles.logo} source={{
+                        uri: url,
+                    }}></Image> : null
+            }
             {/* </View> */}
 
             <View style={styles.titleView}>
@@ -46,18 +47,25 @@ const Modal = props => {
                 </View>
 
                 <View style={styles.btnView}>
-                    <Button style={[styles.btn, { backgroundColor: "#3fd951" }]} icon="arm-flex" mode="contained"
+                    <TouchableOpacity
+                        style = {styles.btn}
                         onPress={() => navigation.navigate('Lesson', {
-                            map: map
+                            map: map,
+                            mapLevel: mapLevel
                         })}>
-                        Learn
-                    </Button>
-                    <Button style={[styles.btn, { backgroundColor: "#47c9f5" }]} icon="axe" mode="contained"
+                            <Text style={{color: "#313c47",letterSpacing:1, fontSize: 16, fontWeight: "bold"}}>Learn</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.btn,{backgroundColor:"#b3d8ff"}]}
+                        title="Test"
                         onPress={() => navigation.navigate('Test', {
-                            map: map
+                            map: map,
+                            mapLevel: mapLevel
                         })}>
-                        Test
-                    </Button>
+
+
+                             <Text style={{color: "#313c47",letterSpacing:1, fontSize: 16, fontWeight: "bold"}}>Test</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -66,14 +74,13 @@ const Modal = props => {
     );
 };
 export default Modal;
-
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         paddingTop: 50,
         width: screenWidth * .8,
         height: 300,
-        borderRadius: 30,
+        borderRadius: 10,
         backgroundColor: '#fff',
     },
     titleView: {
@@ -116,16 +123,24 @@ const styles = StyleSheet.create({
         padding: 20
     },
     btnView: {
-        flexDirection: "row"
+        flexDirection: "row",
+        width: screenWidth,
+        alignItems: "center",
+        justifyContent: "center"
     },
     btn: {
-        margin: 5,
-        backgroundColor: "red",
-        color: "#fff"
+        backgroundColor: "#95f597",
+        width: 80,
+        height: 40,
+        alignItems: "center",
+        justifyContent:"center",
+        borderRadius: 5,
+        marginRight: 10,
+        marginLeft: 10    
     },
     image: {
-        width:100,
-        height:100,
+        width: 100,
+        height: 100,
         borderRadius: 100
     }
 });

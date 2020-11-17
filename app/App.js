@@ -3,6 +3,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux'
+import { View, KeyboardAvoidingView } from 'react-native';
 //HOme
 import SettingComponent from './components/ProfileTab/SettingComponent'
 import ThemesComponent from './components/ThemesTab/ThemesComponent'
@@ -15,7 +16,8 @@ import Home from './components/HomeTab/Home'
 
 //Theme 
 import ThemeDetail from './components/ThemesTab/ThemeDetail'
-
+//
+import Shop from './components/'
 
 // Home 
 import Lesson from './components/HomeTab/Lesson'
@@ -27,7 +29,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { BottomNavigation } from 'react-native-paper';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-community/async-storage';
-import {login,setStatus} from './store/user'
+import { login, setStatus } from './store/user'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -78,6 +80,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Home" component={Home} options={AuthOptions} />
       <HomeStack.Screen name="Lesson" component={Lesson} options={AuthOptions} />
       <HomeStack.Screen name="Test" component={Test} options={AuthOptions} />
+      <HomeStack.Screen name="Shop" component={Shop} options={AuthOptions} />
     </HomeStack.Navigator>
   );
 }
@@ -89,7 +92,6 @@ function Authen() {
       <Stack.Screen name="LoginScreen" component={LoginScreen} options={AuthOptions} />
       <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={AuthOptions} />
       <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} options={AuthOptions} />
-
     </Stack.Navigator>
   );
 }
@@ -98,73 +100,74 @@ function Authen() {
 function mainFlow() {
   const dispatch = useDispatch()
   return (
-    <Tab.Navigator
-      initialRouteName="Home"
-      tabBarOptions={{
-        activeTintColor: '#14274e',
-        inactiveTintColor: "#9ba4b4",
-        labelStyle: {
-          fontSize: 12,
-        },
-        style: {
-          backgroundColor: '#f1f6f9',
-        },
-      }}
+      <Tab.Navigator
+        initialRouteName="Home"
+        tabBarOptions={{
+          activeTintColor: '#14274e',
+          inactiveTintColor: "#9ba4b4",
+          keyboardHidesTabBar: true,
+          labelStyle: {
+            fontSize: 12,
+          },
+          style: {
+            backgroundColor: '#f1f6f9',
+          },
+        }}
 
-    >
-      <Tab.Screen
-        name="1"
-        component={SettingComponent}
-        options={{
-          tabBarLabel: 'Setting',
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="setting" color={color} size={size} />
-          ),
-        }}
-      />
+      >
+        <Tab.Screen
+          name="1"
+          component={SettingComponent}
+          options={{
+            tabBarLabel: 'Setting',
+            tabBarIcon: ({ color, size }) => (
+              <AntDesign name="setting" color={color} size={size} />
+            ),
+          }}
+        />
 
-      <Tab.Screen
-        name="Themes"
-        component={ThemesStackScreen}
-        options={{
-          tabBarLabel: 'Themes',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="wallpaper" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Home"
-        component={HomeStackScreen}
-        options={{
-          tabBarLabel: 'Home',
-          tabBarIcon: ({ focused, color, size }) => (
-            <MaterialCommunityIcons name="home-circle" color={focused ? "#03c04a" : "tomato"} size={32} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="4"
-        component={Home}
-        options={{
-          tabBarLabel: 'Chủ đề',
-          tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="diamond-outline" color={color} size={26} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="5"
-        component={Home}
-        options={{
-          tabBarLabel: 'Notification',
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="notifications" color={color} size={26} />
-          ),
-        }}
-      />
+        <Tab.Screen
+          name="Themes"
+          component={ThemesStackScreen}
+          options={{
+            tabBarLabel: 'Themes',
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="wallpaper" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Home"
+          component={HomeStackScreen}
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({ focused, color, size }) => (
+              <MaterialCommunityIcons name="home-circle" color={focused ? "#03c04a" : "tomato"} size={32} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="4"
+          component={Home}
+          options={{
+            tabBarLabel: 'Shop',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="diamond-outline" color={color} size={26} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="5"
+          component={Home}
+          options={{
+            tabBarLabel: 'Notification',
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="notifications" color={color} size={26} />
+            ),
+          }}
+        />
 
-    </Tab.Navigator>
+      </Tab.Navigator>
   );
 }
 
@@ -190,13 +193,13 @@ export default function App(props) {
 
     <Fragment>
       {
-        isLoading ? 
-        <SplashScreen /> : 
-        <NavigationContainer>
-          {
-             isUser.user ||  isLogined ? mainFlow() : Authen()
-          }
-        </NavigationContainer>
+        isLoading ?
+          <SplashScreen /> :
+          <NavigationContainer>
+            {
+              isUser.user || isLogined ? mainFlow() : Authen()
+            }
+          </NavigationContainer>
       }
 
     </Fragment>

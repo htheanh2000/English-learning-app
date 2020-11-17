@@ -59,8 +59,8 @@ const Home = props => {
       .then(snapshot => {
         const maps = snapshot.val()
         setMap(maps)
-        setMapName(mapLevel, maps.Name)
-
+        setMapName(maps.Name)
+        setMapLevel(mapLevel)
       });
     await checkUserPassMap()
     setShowModal(true)
@@ -72,7 +72,7 @@ const Home = props => {
     <View style={styles.container}>
       <Loader loading={loading} />
       <Image style={styles.image}
-        source={require('../../assets/map.jpg')}
+        source={require('../../assets/map2.jpg')}
       ></Image>
       {
         user.map ?
@@ -80,7 +80,7 @@ const Home = props => {
             {
               localMap.map(item => {
                 return (
-                  <TouchableOpacity style={[styles.btnModal, { backgroundColor: user.map[item.level] ? "#E8B432" : "red", top: item.top, left: item.left }]} onPress={() => press(item.level)}>
+                  <TouchableOpacity style={[styles.btnModal, { backgroundColor: user.map[item.level] ? "#e3d932" : "#5c6466", top: item.top, left: item.left }]} onPress={() => press(item.level)}>
                     <Text style={{  color: "#fff", fontSize: 25, fontWeight: "bold" , textAlign:"center"}}>{item.level}</Text>
                   </TouchableOpacity>
                 )

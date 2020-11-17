@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import ProgressCircle from 'react-native-progress-circle'
 import {useSelector} from 'react-redux'
 import { Avatar } from 'react-native-paper';
+import FastImage from 'react-native-fast-image'
 
 const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
@@ -60,7 +61,7 @@ function SettingComponent() {
     <View style={styles.container}>
       {/* {console.log("user", user)} */}
       <View style={styles.title}>
-        <Image style={styles.khung} source={require('../../assets/test.gif')}></Image>
+        <Image style={styles.khung} source={require('../../assets/Character/yak.gif')}></Image>
         <Text style={styles.textName}>{user.username}</Text>
         <Text style={styles.textContent}>Level: {user.level}</Text>
       </View>
@@ -81,7 +82,7 @@ function SettingComponent() {
 
         </View>
         <View>
-          <Image style={styles.image} source={require('../../assets/rank.png')}></Image>
+              <Image style={styles.image} source={require('../../assets/rank.png')}></Image>
           <Text style={styles.nextLevel}>{user.rank}</Text>
         </View>
 
@@ -118,7 +119,7 @@ export default SettingComponent
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#eee"
+    backgroundColor: "#fff"
   },
   item: {
     width: widthR,
@@ -150,28 +151,23 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#5da4f0",
+    backgroundColor: "#7dc2ff",
     borderBottomLeftRadius: 70,
     borderBottomRightRadius: 70,
-    // borderWidth: 1,
-    color: "#fff"
 
   },
-  gif: {
-    width: 100,
-    height: 100
-  },
   khung: {
-    width: 270,
-    height: 180,
+    resizeMode: "contain",
+    // width: "30%",
+    height: "30%"
   },
   textName: {
-    color: "#fff",
+    color: "#000",
     fontSize: 24,
     fontWeight: "bold"
   },
   textContent: {
-    color: "#fff",
+    color: "#000",
     fontSize: 16,
   },
   modalView: {

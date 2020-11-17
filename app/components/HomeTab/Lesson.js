@@ -10,12 +10,14 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 const Lesson = props => {
   const [question, setQuestion] = useState(1)
-  const {map} = props.route.params
+  {console.log("propsw",  props.route.params)}
+  const {map, mapLevel} = props.route.params
   const [url, setUrl] = useState(null)
 
   const navigation = useNavigation()
   const setNextQuestion =async()=> {
-    if(question <4) {
+    console.log("length",map.Vocabulary.length)
+    if(question < map.Vocabulary.length-1) {
       await setQuestion(question+1) 
       getImg()
     }
@@ -28,8 +30,9 @@ const Lesson = props => {
   }
 
   const getImg =async()=>{
+    console.log("Maps/" +mapLevel +"/" + map.Vocabulary[question].ImgUrl);
     const url = await storage()
-    .ref("Maps/1/" + map.Vocabulary[question].ImgUrl)
+    .ref("Maps/" +mapLevel +"/" + map.Vocabulary[question].ImgUrl)
     .getDownloadURL()
     setUrl(url)
   }
@@ -43,7 +46,7 @@ const Lesson = props => {
             <AntDesign name="hearto" size={30} color="#fff700"></AntDesign>
           </View>
           <View>
-            <Text style={styles.process}>{question}/10</Text>
+            <Text style={styles.process}>{question}/{map.Vocabulary.length-1}</Text>
             <TouchableOpacity>
             <Text style={styles.title}>{map.Name}</Text>
             </TouchableOpacity>
@@ -53,7 +56,7 @@ const Lesson = props => {
         <ProgressBar progress={0.2} color="#fff" />
       </View>
 
-      <View style={{ marginTop: 100, alignItems: "center" }}>
+      <View style={{ marginTop: 70, alignItems: "center" }}>
         <View style={styles.vocaView}>  
           {
             url ? 
@@ -63,15 +66,18 @@ const Lesson = props => {
           }
           <Text style={styles.text}>{map.Vocabulary[question].Name} ({map.Vocabulary[question].Type})</Text>
           <Text style={styles.text}>{map.Vocabulary[question].Means}</Text>
-          <View style={styles.volumeView} >
+          {/* <View style={styles.volumeView} >
             <FontAwesome style={styles.volume} name="volume-up" size={40} color="#fff700"></FontAwesome>
             <FontAwesome style={styles.volume} name="headphones" size={40} color="#fff700"></FontAwesome>
-          </View>
+          </View> */}
         </View>
 
         <View style={styles.example}>
           <TouchableOpacity style={styles.item}>
             <Text style={styles.exText}>{map.Vocabulary[question].Example.Ex1.EN}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.item}>
             <Text style={styles.exText}>{map.Vocabulary[question].Example.Ex1.VN}</Text>
           </TouchableOpacity>
 
@@ -85,9 +91,10 @@ const Lesson = props => {
             null
             }
              
-              { question !== 4 ? <TouchableOpacity style={styles.btn} onPress={()=> setNextQuestion()}>
+              { question !==  map.Vocabulary.length-1 ? <TouchableOpacity style={styles.btn} onPress={()=> setNextQuestion()}>
                 <Text style={styles.exText} >Next</Text>
-              </TouchableOpacity> : <TouchableOpacity style={styles.btn} onPress={()=> setNextQuestion()}>
+              </TouchableOpacity> : 
+              <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate("Home")}>
                 <Text style={styles.exText} >Submit</Text>
               </TouchableOpacity>}
               
@@ -106,7 +113,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#53A0FF',
+    backgroundColor: '#85c2ff',
   },
   header: {
     width: screenWidth,
@@ -128,22 +135,24 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   process: {
-    color: "#fff700",
+    color: "#fff100",
     fontSize: 16,
-    textAlign: "center"
+    textAlign: "center",
+    fontWeight:"100"
+
   },
   exit: {
     color: "#fff",
     fontSize: 36
   },
   vocaView: {
-    backgroundColor: "#3ABEFF",
-    width: screenWidth * .8,
-    borderRadius: 20,
+    backgroundColor: "#5fbacf",
+    width: screenWidth * .9,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    height: 200,
-    paddingTop: 40
+    height: 170,
+    paddingTop: 20
   },
   image: {
     width: 100,
@@ -174,19 +183,21 @@ const styles = StyleSheet.create({
     alignItems:"center"
   },
   exText: {
-    color: "#fff",
+    color: "#343f52",
     fontSize: 16,
     margin: 5,
-    textAlign:"left"
+    textAlign:"left",
+    textAlign:"center"
   },
   item: {
     textAlign:"center",
-    width:screenWidth*.8,
+    width:screenWidth*.9,
     flexDirection: "column",
     justifyContent: "space-between",
-    backgroundColor:"#25a14a",
-    borderRadius: 0,
+    backgroundColor:"#bfd7ff",
+    borderRadius: 10,
     margin: 5,
+    padding: 5
   },
   exvolume: {
     paddingLeft: 5,
@@ -198,6 +209,7 @@ const styles = StyleSheet.create({
     justifyContent:"center",
     width:100,
     height:40,
-    backgroundColor:"green"
+    borderRadius: 5,
+    backgroundColor:"#bfd7ff"
   }
 });
