@@ -17,7 +17,7 @@ import Home from './components/HomeTab/Home'
 //Theme 
 import ThemeDetail from './components/ThemesTab/ThemeDetail'
 //
-import Shop from './components/'
+import Shop from './components/shopTab/shop'
 
 // Home 
 import Lesson from './components/HomeTab/Lesson'
@@ -148,7 +148,7 @@ function mainFlow() {
         />
         <Tab.Screen
           name="4"
-          component={Home}
+          component={Shop}
           options={{
             tabBarLabel: 'Shop',
             tabBarIcon: ({ color }) => (

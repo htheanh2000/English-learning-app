@@ -6,28 +6,70 @@ import {
   Dimensions,
   Image
 } from 'react-native';
-import ImagePicker from 'react-native-image-picker';
-import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import ProgressCircle from 'react-native-progress-circle'
-import {useSelector} from 'react-redux'
-import { Avatar } from 'react-native-paper';
-import FastImage from 'react-native-fast-image'
-
+import { useSelector } from 'react-redux'
+import database from '@react-native-firebase/database';
+import { Button } from 'react-native-paper';
 const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
 
+const Data = [
+  {
+    uri : require('../../assets/Character/yak.gif'),
+    name: "yak"
+  },
+  {
+    uri : require('../../assets/Character/donkey.gif'),
+    name: "Donkey",
+    price: "1000"
+  },
+  {
+    uri : require('../../assets/Character/gorilla.gif'),
+    name: "gorilla"
+  },
+  {
+    uri : require('../../assets/Character/orangutan.gif'),
+    name: "orangutan"
+  },
+  {
+    uri : require('../../assets/Character/yak.gif'),
+    name: "yak"
+  }
+]
+
 function Shop() {
   const user = useSelector(state => state.user)
-  useEffect(()=> {
-    console.log("state", user);
-  })
-  const navigation = useNavigation()
+  const [index, setIndex] = useState(1)
+  const [Uri, setUri] = useState(1)
+  let data = null
+  const getData = async () => {
+    await database()
+      .ref('characters/')
+      .once('value')
+      .then(snapshot => {
+        data = snapshot.val()
+      });
+      setIndex[1]
+    console.log("data", data[index].Name)
+  }
+  getData()
+
+  const setNext=()=> {
+    setIndex(index+1)
+  }
+
+  const setPrev=()=> {
+    setIndex(index-1)
+  }
   return (
     <View style={styles.container}>
       <View style={styles.title}>
-        <Image style={styles.khung} source={require('../../assets/Character/yak.gif')}></Image>
+         <Image style={styles.khung} source={Data[index].uri} /> 
+          <Text style={{marginTop: 10, fontSize: 26, color: "#fff"}}>{Data[index].name}</Text> 
+          <Text style={{marginTop: 5, fontSize: 20, color: "#fff"}}>Price: {Data[index].price}</Text> 
       </View>
+      <Button onPress={()=>setNext()}>Next</Button>
+      <Button onPress={()=>setPrev()}>Prev</Button>
     </View>
   )
 }
@@ -39,31 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff"
   },
-  item: {
-    width: widthR,
-    height: 50,
-    alignItems: "center",
-    padding: 10,
-    borderBottomWidth: 2,
-    borderColor: "#eee",
-    flexDirection: "row"
-  },
-  icon: {
-    marginRight: 20
-  },
-  rightIcon: {
-    position: "absolute",
-    right: 20
-  },
-  bigText: {
-    fontWeight: "bold",
-    fontSize: 16,
-    color: "#fff"
-  },
-  image: {
-    width: 120,
-    height: 120
-  },
+
   title: {
     height: heightR * 1 / 2,
     flexDirection: "column",
@@ -77,89 +95,15 @@ const styles = StyleSheet.create({
   khung: {
     resizeMode: "contain",
     // width: "30%",
-    height: "30%"
+    height: "40%"
   },
-  textName: {
-    color: "#000",
-    fontSize: 24,
-    fontWeight: "bold"
-  },
-  textContent: {
-    color: "#000",
-    fontSize: 16,
-  },
-  modalView: {
-    padding: 10,
-    position: "absolute",
-    backgroundColor: "#fff",
-    alignItems: "center",
-    width: widthR * .8,
-    left: widthR * .1,
-    height: 180,
-    top: heightR / 2 - 50,
-    borderRadius: 30,
-    zIndex: 99,
-    flexDirection: "row",
-    justifyContent: "space-around",
-    textAlign: "center"
-  },
-  heroTitle: {
-    color: "#0a0d38",
-    fontSize: 16,
-    fontWeight: "bold",
-    position: "absolute",
-    textAlign: "center",
-    top: 10,
-    width: 100,
-    left: widthR * .4 - 50,
+  slideC: {
+
 
   },
-  nextLevel: {
-    textAlign: "center",
-    color: "#0a0d38",
-    fontWeight: "bold"
-  },
-  history: {
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 130
-  },
-  historytitle: {
-    color: "#0a0d38",
-    fontWeight: "bold",
-    paddingTop: 5,
-    fontSize: 16
-  },
-  historyMatch: {
-    width: widthR * .7,
-    height: 54,
-    paddingLeft: 5,
-    paddingRight: 5,
-    backgroundColor: "#fff",
-    borderRadius: 27,
-    alignItems: "center",
-    justifyContent: "space-around",
-    flexDirection: "row"
-  },
-  defeat: {
-    borderWidth: 3,
-    borderColor: "#ff4530",
-    width: 44,
-    height: 44,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 22,
-  },
-  victory: {
-    borderWidth: 3,
-    borderColor: "#5da4f0",
-    width: 44,
-    height: 44,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 22
+  titleC: {
+
   }
-
 });
 
 
