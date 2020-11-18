@@ -13,15 +13,20 @@ import ProgressCircle from 'react-native-progress-circle'
 import {useSelector} from 'react-redux'
 import { Avatar } from 'react-native-paper';
 import FastImage from 'react-native-fast-image'
+import Data from '../../Data/characters'
 
 const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
 
-function SettingComponent() {
+function Profile() {
   const user = useSelector(state => state.user)
-
+  const [index,setIndex] = useState("")
   useEffect(()=> {
-    console.log("state", user);
+      Data.map(item => {
+        if(item.name === user.currentCharacter) {
+          setIndex(item.id)
+        }
+      })
   })
   const navigation = useNavigation()
   // const selectWallpaper = async () => {
@@ -59,9 +64,13 @@ function SettingComponent() {
 
   return (
     <View style={styles.container}>
-      {/* {console.log("user", user)} */}
       <View style={styles.title}>
-        <Image style={styles.khung} source={require('../../assets/Character/yak.gif')}></Image>
+        {
+          console.log("index", index)
+        }
+        {
+          index > 0? <Image style={styles.khung} source={Data[index].uri}></Image> : <Image style={styles.khung} source={require('../../assets/test.gif')}></Image>
+        }
         <Text style={styles.textName}>{user.username}</Text>
         <Text style={styles.textContent}>Level: {user.level}</Text>
       </View>
@@ -82,7 +91,8 @@ function SettingComponent() {
 
         </View>
         <View>
-              <Image style={styles.image} source={require('../../assets/rank.png')}></Image>
+           
+             <Image style={styles.image} source={require('../../assets/rank.png')}></Image>
           <Text style={styles.nextLevel}>{user.rank}</Text>
         </View>
 
@@ -114,7 +124,7 @@ function SettingComponent() {
   )
 }
 
-export default SettingComponent
+export default Profile
 
 const styles = StyleSheet.create({
   container: {
@@ -141,6 +151,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     color: "#fff"
+  },
+  khung: {
+    marginTop: 50,
+    resizeMode: "contain",
+    height: "40%"
   },
   image: {
     width: 120,

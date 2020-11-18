@@ -9,7 +9,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { setStatus } from '../../store/user'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../../components/Auth/Loader'
-
 import localMap from '../../Data/map'
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -23,7 +22,7 @@ const Home = props => {
   const [mapName, setMapName] = useState('')
   const [mapLevel, setMapLevel] = useState('1')
   const [init, setInit] = useState(false)
-  const [star, setStar] = useState(null)
+  const [star, setStar] = useState(0)
   const [loading, setLoading] = useState(true)
   useEffect(() => {
     if (!init) {
@@ -32,6 +31,8 @@ const Home = props => {
       setLoading(false)
     }
   })
+
+  console.log("------RUN INIT -----",user);
   const runInit = async () => {
     console.log("------RUN INIT -----");
     if (auth().currentUser) {
@@ -48,11 +49,13 @@ const Home = props => {
     }
   }
   const checkUserPassMap = async () => {
-    user.map[1] ? setStar(user.map[1]) : setStar(0)
+    console.log("checkUserPassMap", user.map[mapLevel])
+    user.map[mapLevel] ? setStar(user.map[mapLevel]) : setStar(0)
 
   }
   const press = async (mapLevel) => {
     setLoading(true)
+    await setMapLevel(mapLevel)
     await database()
       .ref('maps/' + mapLevel)
       .once('value')
@@ -66,7 +69,7 @@ const Home = props => {
     setShowModal(true)
     setLoading(false)
   }
-  // init()
+
   return (
 
     <View style={styles.container}>
@@ -80,22 +83,20 @@ const Home = props => {
             {
               localMap.map(item => {
                 return (
-                  <TouchableOpacity style={[styles.btnModal, { backgroundColor: user.map[item.level] ? "#e3d932" : "#5c6466", top: item.top, left: item.left }]} onPress={() => press(item.level)}>
-                    <Text style={{  color: "#fff", fontSize: 25, fontWeight: "bold" , textAlign:"center"}}>{item.level}</Text>
+                  <TouchableOpacity style={[styles.btnModal, { backgroundColor:  user.map[item.level] ? "#e3d932" : "#5c6466", top: item.top, left: item.left }]} onPress={() => press(item.level)}>
+                    <Text style={{ color: "#fff", fontSize: 25, fontWeight: "bold", textAlign: "center" }}>{item.level}</Text>
                   </TouchableOpacity>
                 )
               })
             }
           </View> : null
       }
-
       {
-        showModal ?
-          <TouchableOpacity style={styles.layout} onPress={() => setShowModal(false)}>
-            <Modal star={star} map={map} mapLevel={mapLevel} mapName={mapName} />
-          </TouchableOpacity>
-          : null
+        showModal ? <TouchableOpacity style={styles.layout} onPress={() => setShowModal(false)}>
+          <Modal star={star} map={map} mapLevel={mapLevel} mapName={mapName} />
+        </TouchableOpacity> : null
       }
+
     </View>
   );
 };
@@ -157,4 +158,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   }
-});
+}); 

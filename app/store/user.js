@@ -12,18 +12,32 @@ const slice = createSlice({
   reducers: {
     loginSuccess: (state, action) => {
       console.log("=====login sucessful!======", action.payload)
-      state.user = action.payload;
-      AsyncStorage.setItem('user', JSON.stringify(action.payload))
-    },
-    status: (state,action) => {
-      console.log("set status", state);
-      const {rank, username, online, level, exp,map} = action.payload
+      const {rank, username, online, level, exp,map, gold,characters , currentCharacter, rollCalls} = action.payload
       state.rank = rank,
       state.username = username,
       state.online = online,
       state.level = level,
       state.exp = exp,
-      state.map = map
+      state.map = map,
+      state.gold = gold,
+      state.characters = characters
+      state.currentCharacter = currentCharacter
+      state.rollCalls = rollCalls
+      AsyncStorage.setItem('user', JSON.stringify(action.payload))
+    },
+    status: (state,action) => {
+      console.log("set status", state);
+      const {rank, username, online, level, exp,map, gold,characters , currentCharacter, rollCalls} = action.payload
+      state.rank = rank,
+      state.username = username,
+      state.online = online,
+      state.level = level,
+      state.exp = exp,
+      state.map = map,
+      state.gold = gold,
+      state.characters = characters
+      state.currentCharacter = currentCharacter
+      state.rollCalls = rollCalls
     },
     logoutSuccess: (state, action) =>  {
       console.log("logoutSuccess")
@@ -51,6 +65,33 @@ const slice = createSlice({
             });
         }
       }
+    },
+    updateGoldReducer: (state, action) => {
+      console.log("updateGoldReducer", action.payload);
+      state.gold = action.payload
+    },
+    updateCharactersReducer: (state, action) => {
+      const newCha = action.payload
+      console.log("updateCharactersReducer", action.payload);
+      if(state.characters) {
+        state.characters.push(newCha)
+      }
+      else {
+        state.characters = [newCha]
+      }
+    },
+    updateUserCharacterReducer: (state, action) => {
+      console.log("update User Character Reducer", action.payload);
+      state.currentCharacter = action.payload
+    },
+    updateUserRollCallReducer : (state,action) => {
+      console.log("update User Roll Call", action.payload);
+      if(state.rollCalls) {
+        state.rollCalls.push(action.payload)
+      }
+      else {
+        state.rollCalls = [action.payload]
+      }
     }
   },
 });
@@ -58,7 +99,7 @@ const slice = createSlice({
 
 export default slice.reducer
 // Actions
-const { loginSuccess, logoutSuccess,status } = slice.actions
+const { loginSuccess, logoutSuccess,status ,updateGoldReducer,updateCharactersReducer,updateUserCharacterReducer,updateUserRollCallReducer} = slice.actions
 export const login = ( user ) => async dispatch => {
   try {
     return dispatch(loginSuccess(user))
@@ -80,6 +121,42 @@ export const setStatus =(stt)=> async dispatch => {
   try {
     return dispatch(status(stt))
   } catch (e) {
+    return console.error(e.message);
+  }
+}
+
+export const updateGold =(gold) => async dispatch => {
+  try {
+    return dispatch(updateGoldReducer(gold))
+  }
+  catch (e) {
+    return console.error(e.message);
+  }
+}
+
+
+export const updateCharacters =(characters) => async dispatch => {
+  try {
+    return dispatch(updateCharactersReducer(characters))
+  }
+  catch (e) {
+    return console.error(e.message);
+  }
+}
+
+export const updateUserCharacters =(character) => async dispatch => {
+  try {
+    return dispatch(updateUserCharacterReducer(character))
+  }
+  catch (e) {
+    return console.error(e.message);
+  }
+}
+export const rollCall =(date) => async dispatch => {
+  try {
+    return dispatch(updateUserRollCallReducer(date))
+  }
+  catch (e) {
     return console.error(e.message);
   }
 }

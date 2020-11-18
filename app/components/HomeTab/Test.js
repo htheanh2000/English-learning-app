@@ -16,12 +16,10 @@ const Test = props => {
   const [score, setScore] = useState(0)
   const { map, mapLevel } = props.route.params
   const [url, setUrl] = useState(null)
-  const [finish, setFinish] = useState(false)
+  const [finish, setFinish] = useState(true)
   const navigation = useNavigation()
-  const array = [1,2,3]
-  {
-    console.log("Props", props.route.params)
-  }
+  const array = [1,2,3,4,5,6,7,8,9]
+
 
   const checkAns = () => {
     if (map.Vocabulary[array[question]].Name === value) {
@@ -37,7 +35,7 @@ const Test = props => {
   const setNextQuestion = async () => {
     checkAns()
     setIsShowTip(false)
-    if (question < 4) {
+    if (question < 10) {
       await setQuestion(question + 1)
       getImg()
     }
@@ -56,6 +54,7 @@ const Test = props => {
       .ref("Maps/" + mapLevel + "/" + map.Vocabulary[array[question]].ImgUrl)
       .getDownloadURL()
     setUrl(url)
+    console.log("array[question]", array[question]);
   }
   getImg()
   const submit = () => {
@@ -103,7 +102,6 @@ const Test = props => {
       array[j] = temp;
 
     }
-    console.log("aray", array)
     return array;
   }
   shuffle(array);
@@ -137,7 +135,7 @@ const Test = props => {
               }}></Image> : null
           }
           {
-          isShowTip ?  <Text style={styles.text}>{map.Vocabulary[array[question-1]].Means}</Text> : <Button style={styles.showtip} onPress={()=> ShowTip()} color="#fff">Show Tip</Button>
+          isShowTip ?  <Text style={styles.text}>{map.Vocabulary[array[question]].Means}</Text> : <Button style={styles.showtip} onPress={()=> ShowTip()} color="#fff">Show Tip</Button>
           }          
 
           <TextInput style={styles.textinput}  onChangeText={text => onChangeText(text)}
@@ -155,7 +153,7 @@ const Test = props => {
                 null
             }
 
-            {question !== 4 ? <TouchableOpacity style={styles.btn} onPress={() => setNextQuestion()}>
+            {question !== 10 ? <TouchableOpacity style={styles.btn} onPress={() => setNextQuestion()}>
               <Text style={styles.exText} >Next</Text>
             </TouchableOpacity> : <TouchableOpacity style={styles.btn} onPress={() => submit()}>
                 <Text style={styles.exText} >Submit</Text>

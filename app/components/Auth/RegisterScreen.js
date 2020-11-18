@@ -20,6 +20,7 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 import { mainStyles } from '../../styles/mainStyles'
 import AsyncStorage from '@react-native-community/async-storage';
+import characters from '../../Data/characters';
 
 const RegisterScreen = props => {
     const dispatch = useDispatch()
@@ -41,20 +42,23 @@ const RegisterScreen = props => {
             setErrortext('Please fill password');
             return;
         }
-
+        const newUser = {
+            level: 1,
+            rank: "UnRank",
+            username: username,
+            gold : 10000,
+            online: true,
+            exp: 0,
+            map:[ null],
+            history: [],
+            characters: [] 
+        }
         auth()
             .createUserWithEmailAndPassword(email, password)
             .then((user) => {
                 console.log('User account created & signed in!');
 
-                const newUser = {
-                    level: 1,
-                    rank: "UnRank",
-                    username: username,
-                    online: true,
-                    exp: 0,
-                    history: []
-                }
+                
                 if (auth().currentUser) {
                     userId = auth().currentUser.uid;
                     console.log("userId", userId);
@@ -63,7 +67,6 @@ const RegisterScreen = props => {
                     }
                 }
                 AsyncStorage.setItem("user", JSON.stringify(newUser))
-                dispatch(login(newUser))
                 setLoading(false)
             })
             .catch(error => {
@@ -72,7 +75,6 @@ const RegisterScreen = props => {
                     setLoading(false)
                     return
                 }
-
                 if (error.code === 'auth/invalid-email') {
                     setErrortext('That email address is invalid!');
                     setLoading(false)
@@ -81,6 +83,55 @@ const RegisterScreen = props => {
 
                 console.error(error);
             });
+
+            auth()
+            .signInWithEmailAndPassword(email, password)
+            .then((iUser) => {
+              const user = auth().currentUser
+              if (user) {
+                const userId = iUser.user.uid;
+                console.log("userId",userId);
+                database()
+                  .ref('users/' + userId)
+                  .once('value')
+                  .then(snapshot => {
+                    console.log("snapshopt", snapshot.val());
+                    dispatch(login(snapshot.val()))
+                  });
+                setLoading(false)
+      
+              }
+              else {
+                console.log("You haven't login");
+                setLoading(false)
+      
+              }
+            })
+            .catch(error => {
+              if (error.code === 'auth/invalid-email') {
+                console.log('=====auth/invalid-email======');
+                setErrortext("/invalid-email")
+              }
+              if (error.code === 'auth/user-disabled') {
+                console.log('=====auth/user-disabled======');
+                setErrortext("You account disabled by some resome")
+                // return dispatch(loginSuccess())
+              }
+              if (error.code === 'auth/user-not-found') {
+                console.log('=====auth/user-not-found======');
+                setErrortext("This account haven't registered")
+                // return dispatch(loginSuccess())
+              }
+              if (error.code === 'auth/wrong-password') {
+                console.log('=====auth/wrong-password=====');
+                setErrortext("wrong password")
+              }
+              console.error(error);
+              setLoading(false)
+            });
+
+                dispatch(login(newUser))
+
     };
 
     return (

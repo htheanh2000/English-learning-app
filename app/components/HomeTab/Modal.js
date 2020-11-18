@@ -11,16 +11,13 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 const Modal = props => {
 
     const { map, star, mapLevel } = props
-    console.log("props", props);
     const navigation = useNavigation()
     const [url, setUrl] = useState(null)
     const getImg = async () => {
-        console.log("link ", "Maps/" + mapLevel.toString() + "/" + map.ImgUrl);
         const url = await storage()
             .ref("Maps/" + mapLevel.toString() + "/" + map.ImgUrl)
             .getDownloadURL()
         setUrl(url)
-        console.log("url", url);
     }
     getImg()
 

@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux'
 import { View, KeyboardAvoidingView } from 'react-native';
 //HOme
-import SettingComponent from './components/ProfileTab/SettingComponent'
+import Profile from './components/ProfileTab/Profile'
 import ThemesComponent from './components/ThemesTab/ThemesComponent'
 //Auth 
 import SplashScreen from './components/Auth/SplashScreen'
@@ -13,7 +13,8 @@ import LoginScreen from './components/Auth/LoginScreen'
 import RegisterScreen from './components/Auth/RegisterScreen'
 import ForgotPasswordScreen from './components/Auth/ForgotPasswordScreen'
 import Home from './components/HomeTab/Home'
-
+// Roll Call Tab
+import RollCallTab from './components/RollCallTab/RollCallTab'
 //Theme 
 import ThemeDetail from './components/ThemesTab/ThemeDetail'
 //
@@ -81,6 +82,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Lesson" component={Lesson} options={AuthOptions} />
       <HomeStack.Screen name="Test" component={Test} options={AuthOptions} />
       <HomeStack.Screen name="Shop" component={Shop} options={AuthOptions} />
+      <HomeStack.Screen name="RollCallTab" component={RollCallTab} options={AuthOptions} />
     </HomeStack.Navigator>
   );
 }
@@ -116,8 +118,8 @@ function mainFlow() {
 
       >
         <Tab.Screen
-          name="1"
-          component={SettingComponent}
+          name="Profile"
+          component={Profile}
           options={{
             tabBarLabel: 'Setting',
             tabBarIcon: ({ color, size }) => (
@@ -157,10 +159,10 @@ function mainFlow() {
           }}
         />
         <Tab.Screen
-          name="5"
-          component={Home}
+          name="RollCallTab"
+          component={RollCallTab}
           options={{
-            tabBarLabel: 'Notification',
+            tabBarLabel: 'RollCall',
             tabBarIcon: ({ color }) => (
               <Ionicons name="notifications" color={color} size={26} />
             ),
