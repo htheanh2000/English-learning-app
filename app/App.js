@@ -19,7 +19,8 @@ import RollCallTab from './components/RollCallTab/RollCallTab'
 import ThemeDetail from './components/ThemesTab/ThemeDetail'
 //
 import Shop from './components/shopTab/shop'
-
+//FirstLogin
+import FirstLogin from './components/FirstLogin/firstLogin'
 // Home 
 import Lesson from './components/HomeTab/Lesson'
 import Test from './components/HomeTab/Test'
@@ -178,6 +179,7 @@ export default function App(props) {
   const [isLogined, setIsLogined] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const isUser = useSelector(state => state.user)
+  console.log("App", isUser)
   useEffect(() => {
     AsyncStorage.getItem('user')
       .then((res) => {

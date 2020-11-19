@@ -45,23 +45,35 @@ const Modal = props => {
 
                 <View style={styles.btnView}>
                     <TouchableOpacity
-                        style = {styles.btn}
-                        onPress={() => navigation.navigate('Lesson', {
-                            map: map,
-                            mapLevel: mapLevel
-                        })}>
-                            <Text style={{color: "#313c47",letterSpacing:1, fontSize: 16, fontWeight: "bold"}}>Learn</Text>
+                        style={styles.btn}
+                        onPress={() => {
+                            props.onPress()
+                            navigation.navigate('Lesson', {
+                                map: map,
+                                mapLevel: mapLevel,
+                                star: star
+                            })
+                        }
+
+                        }>
+                        <Text style={{ color: "#313c47", letterSpacing: 1, fontSize: 16, fontWeight: "bold" }}>Learn</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={[styles.btn,{backgroundColor:"#b3d8ff"}]}
+                    <TouchableOpacity style={[styles.btn, { backgroundColor: "#b3d8ff" }]}
                         title="Test"
-                        onPress={() => navigation.navigate('Test', {
-                            map: map,
-                            mapLevel: mapLevel
-                        })}>
+                        onPress={() => {
+                            console.log("props", props);
+                            props.onPress()
+                            navigation.navigate('Test', {
+                                map: map,
+                                mapLevel: mapLevel,
+                                star: star
+                            })
+                        }
+                        }>
 
 
-                             <Text style={{color: "#313c47",letterSpacing:1, fontSize: 16, fontWeight: "bold"}}>Test</Text>
+                        <Text style={{ color: "#313c47", letterSpacing: 1, fontSize: 16, fontWeight: "bold" }}>Test</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -130,10 +142,10 @@ const styles = StyleSheet.create({
         width: 80,
         height: 40,
         alignItems: "center",
-        justifyContent:"center",
+        justifyContent: "center",
         borderRadius: 5,
         marginRight: 10,
-        marginLeft: 10    
+        marginLeft: 10
     },
     image: {
         width: 100,

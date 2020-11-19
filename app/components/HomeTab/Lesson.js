@@ -53,7 +53,7 @@ const Lesson = props => {
           </View>
           <Text style={styles.exit}  onPress={()=> navigation.navigate("Home")}>X</Text>
         </View>
-        <ProgressBar progress={0.2} color="#fff" />
+        <ProgressBar progress={question/10} color="#fff" />
       </View>
 
       <View style={{ marginTop: 70, alignItems: "center" }}>

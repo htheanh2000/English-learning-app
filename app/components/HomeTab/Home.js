@@ -32,10 +32,8 @@ const Home = props => {
     }
   })
 
-  console.log("------RUN INIT -----",user);
   const runInit = async () => {
-    console.log("------RUN INIT -----");
-    if (auth().currentUser) {
+      if (auth().currentUser) {
       const userId = auth().currentUser.uid;
       if (userId) {
         database()
@@ -49,8 +47,12 @@ const Home = props => {
     }
   }
   const checkUserPassMap = async () => {
-    console.log("checkUserPassMap", user.map[mapLevel])
-    user.map[mapLevel] ? setStar(user.map[mapLevel]) : setStar(0)
+    if (user.map && user.map[mapLevel]) {
+      setStar(user.map[mapLevel])
+    }
+    else {
+      setStar(0)
+    }
 
   }
   const press = async (mapLevel) => {
@@ -77,23 +79,20 @@ const Home = props => {
       <Image style={styles.image}
         source={require('../../assets/map2.jpg')}
       ></Image>
-      {
-        user.map ?
-          <View style={{ width: screenWidth, height: screenHeight, position: "absolute", top: 0, left: 0 }}>
-            {
-              localMap.map(item => {
-                return (
-                  <TouchableOpacity style={[styles.btnModal, { backgroundColor:  user.map[item.level] ? "#e3d932" : "#5c6466", top: item.top, left: item.left }]} onPress={() => press(item.level)}>
-                    <Text style={{ color: "#fff", fontSize: 25, fontWeight: "bold", textAlign: "center" }}>{item.level}</Text>
-                  </TouchableOpacity>
-                )
-              })
-            }
-          </View> : null
-      }
+      <View style={{ width: screenWidth, height: screenHeight, position: "absolute", top: 0, left: 0 }}>
+        {
+          localMap.map(item => {
+            return (
+              <TouchableOpacity style={[styles.btnModal, { backgroundColor: "#e3d932", top: item.top, left: item.left }]} onPress={() => press(item.level)}>
+                <Text style={{ color: "#fff", fontSize: 25, fontWeight: "bold", textAlign: "center" }}>{item.level}</Text>
+              </TouchableOpacity>
+            )
+          })
+        }
+      </View>
       {
         showModal ? <TouchableOpacity style={styles.layout} onPress={() => setShowModal(false)}>
-          <Modal star={star} map={map} mapLevel={mapLevel} mapName={mapName} />
+          <Modal star={star} onPress={() => setShowModal(false)} map={map} mapLevel={mapLevel} mapName={mapName} />
         </TouchableOpacity> : null
       }
 
