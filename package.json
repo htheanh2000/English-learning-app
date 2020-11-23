@@ -1,6 +1,6 @@
 {
   "name": "WitchWorld",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "reset": "react-native start --reset-cache",
@@ -41,6 +41,7 @@
     "react-native-exit-app": "^1.1.0",
     "react-native-fast-image": "^8.3.4",
     "react-native-gesture-handler": "^1.8.0",
+    "react-native-i18n": "^2.0.15",
     "react-native-image-picker": "^2.3.4",
     "react-native-loading-spinner-overlay": "^2.0.0",
     "react-native-lock-screen": "^1.0.1",

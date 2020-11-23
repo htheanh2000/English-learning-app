@@ -11,6 +11,7 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 const Modal = props => {
 
     const { map, star, mapLevel } = props
+    console.log("Modal props", props)
     const navigation = useNavigation()
     const [url, setUrl] = useState(null)
     const getImg = async () => {
@@ -23,15 +24,12 @@ const Modal = props => {
 
     return (
         <View style={styles.container}>
-            {/* <View style={styles.logo}> */}
             {
                 url ?
                     <Image style={styles.logo} source={{
                         uri: url,
                     }}></Image> : null
             }
-            {/* </View> */}
-
             <View style={styles.titleView}>
                 <Text style={styles.title}>{map.Name}</Text>
                 <Text style={styles.content}>{map.Content}</Text>

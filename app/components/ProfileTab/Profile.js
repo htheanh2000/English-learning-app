@@ -10,16 +10,20 @@ import ImagePicker from 'react-native-image-picker';
 import AsyncStorage from '@react-native-community/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import ProgressCircle from 'react-native-progress-circle'
-import {useSelector} from 'react-redux'
-import { Avatar } from 'react-native-paper';
+import {useSelector,useDispatch} from 'react-redux'
+import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
+import { Avatar, Button } from 'react-native-paper';
 import FastImage from 'react-native-fast-image'
 import Data from '../../Data/characters'
-
+import {setLanguage} from '../../store/user'
+import I18n from  '../../i18n/i18n'
 const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
 
-function Profile() {
+function Profile(props) {
   const user = useSelector(state => state.user)
+  const dispatch = useDispatch()
   const [index,setIndex] = useState("")
   useEffect(()=> {
       Data.map(item => {
@@ -61,22 +65,53 @@ function Profile() {
   //       console.log("img", img);
   //     }
   //   });
+  const switchLg =()=> {
 
+    if(user.language === "en") {
+      I18n.locale = 'vn';
+      dispatch(setLanguage("vn"))
+      if (auth().currentUser) {
+        const userId = auth().currentUser.uid;
+        if (userId) {
+          database()
+            .ref('users/' + userId )
+            .update({
+              language: "vn"
+            })
+        }
+      }  
+    }
+    else{
+      I18n.locale = 'en';
+      dispatch(setLanguage("en"))
+      if (auth().currentUser) {
+        const userId = auth().currentUser.uid;
+        if (userId) {
+          database()
+            .ref('users/' + userId )
+            .update({
+              language: "en"
+            })
+        }
+      }  
+    }
+  }
   return (
     <View style={styles.container}>
       <View style={styles.title}>
-        {
-          console.log("index", index)
-        }
+     
         {
           index > 0? <Image style={styles.khung} source={Data[index].uri}></Image> : <Image style={styles.khung} source={require('../../assets/test.gif')}></Image>
         }
         <Text style={styles.textName}>{user.username}</Text>
-        <Text style={styles.textContent}>Level: {user.level}</Text>
+        <Text style={styles.textContent}>{I18n.t('Level')}: {user.level}</Text>
+        <Text style={styles.textContent}>{I18n.t('Language')}: {user.language}</Text>
+
+
       </View>
 
       <View style={styles.modalView}>
-        <View style={{ textAlign: "center" }}>
+        {/* <View style={{ textAlign: "center" }}>
           <ProgressCircle
             percent={66}
             radius={50}
@@ -94,32 +129,11 @@ function Profile() {
            
              <Image style={styles.image} source={require('../../assets/rank.png')}></Image>
           <Text style={styles.nextLevel}>{user.rank}</Text>
-        </View>
+        </View> */}
+        <Button style={{backgroundColor:"#000" }} onPress={switchLg}>{I18n.t('Switch Language')}</Button>
 
       </View>
-      <View style={styles.history}>
-        <Text style={styles.historytitle}>History</Text>
-        <Text style={{ paddingBottom: 5 }}>Tỉ lệ thắng 20 trận gần đây của bạn là 78%</Text>
-        <View style={styles.historyMatch}>
-          <View style={styles.victory} >
-            <Avatar.Image size={36} source={{ uri: "https://source.unsplash.com/random/1" }} />
-          </View>
-          <View style={styles.victory} >
-            <Avatar.Image size={36} source={{ uri: "https://source.unsplash.com/random/2" }} />
-          </View>
-          <View style={styles.defeat} >
-            <Avatar.Image size={36} source={{ uri: "https://source.unsplash.com/random/3" }} />
-          </View>
-          <View style={styles.defeat} >
-            <Avatar.Image size={36} source={{ uri: "https://source.unsplash.com/random/4" }} />
-          </View>
-          <View style={styles.defeat} >
-            <Avatar.Image size={36} source={{ uri: "https://source.unsplash.com/random/5" }} />
-          </View>
-
-        </View>
-      </View>
-
+      
     </View>
   )
 }

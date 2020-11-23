@@ -10,6 +10,7 @@ import { setStatus } from '../../store/user'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../../components/Auth/Loader'
 import localMap from '../../Data/map'
+import Data from '../../Data/characters'
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
@@ -21,31 +22,18 @@ const Home = props => {
   const [map, setMap] = useState(null)
   const [mapName, setMapName] = useState('')
   const [mapLevel, setMapLevel] = useState('1')
-  const [init, setInit] = useState(false)
   const [star, setStar] = useState(0)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [index,setIndex] = useState("")
   useEffect(() => {
-    if (!init) {
-      runInit()
-      setInit(true)
-      setLoading(false)
-    }
+    Data.map(item => {
+      if(item.name === user.currentCharacter) {
+        setIndex(item.id)
+      }
+    })
   })
 
-  const runInit = async () => {
-      if (auth().currentUser) {
-      const userId = auth().currentUser.uid;
-      if (userId) {
-        database()
-          .ref('users/' + userId)
-          .once('value')
-          .then(snapshot => {
-            const user = snapshot.val()
-            dispatch(setStatus(user))
-          });
-      }
-    }
-  }
+ 
   const checkUserPassMap = async () => {
     if (user.map && user.map[mapLevel]) {
       setStar(user.map[mapLevel])
@@ -53,9 +41,9 @@ const Home = props => {
     else {
       setStar(0)
     }
-
   }
   const press = async (mapLevel) => {
+    if(user.level + 1 <  mapLevel)  return
     setLoading(true)
     await setMapLevel(mapLevel)
     await database()
@@ -65,15 +53,24 @@ const Home = props => {
         const maps = snapshot.val()
         setMap(maps)
         setMapName(maps.Name)
-        setMapLevel(mapLevel)
       });
     await checkUserPassMap()
     setShowModal(true)
     setLoading(false)
   }
-
+  const mapColor =(level)=> {
+    if(user.map) {
+      if(user.map[level]) {
+        return "#e3d932"
+      }
+    }
+    if(user.level+1 === level) {
+      return "green"
+    }
+   
+    return "#b5b5b5"
+  }
   return (
-
     <View style={styles.container}>
       <Loader loading={loading} />
       <Image style={styles.image}
@@ -83,8 +80,12 @@ const Home = props => {
         {
           localMap.map(item => {
             return (
-              <TouchableOpacity style={[styles.btnModal, { backgroundColor: "#e3d932", top: item.top, left: item.left }]} onPress={() => press(item.level)}>
-                <Text style={{ color: "#fff", fontSize: 25, fontWeight: "bold", textAlign: "center" }}>{item.level}</Text>
+              <TouchableOpacity style={[styles.btnModal, {   backgroundColor:mapColor(item.level), top: item.top, left: item.left }]}  onPress={() => press(item.level)} >
+                  <Text style={{ color: "#fff", fontSize: 25, fontWeight: "bold", textAlign: "center" }}>{item.level}</Text>
+                    {
+                        item.level === user.level+1  && index > 0 ? 
+                        <Image style={styles.character} source={Data[index].uri}></Image> : null
+                    }
               </TouchableOpacity>
             )
           })
@@ -156,5 +157,12 @@ const styles = StyleSheet.create({
     height: screenHeight,
     alignItems: "center",
     justifyContent: "center"
+  },
+  character: {
+    top:-40,  
+    resizeMode: "contain",
+    height: "100%",
+    zIndex: 999,
+    position:"absolute"
   }
 }); 

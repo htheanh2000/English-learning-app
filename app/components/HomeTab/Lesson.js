@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, SafeAreaView, ScrollView  } from 'react-native';
 import { Button, ProgressBar, Colors } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -39,7 +39,8 @@ const Lesson = props => {
   getImg()
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
       <View style={styles.header}>
         <View style={styles.topHeader}>
           <View style={styles.hardMode}>
@@ -66,10 +67,7 @@ const Lesson = props => {
           }
           <Text style={styles.text}>{map.Vocabulary[question].Name} ({map.Vocabulary[question].Type})</Text>
           <Text style={styles.text}>{map.Vocabulary[question].Means}</Text>
-          {/* <View style={styles.volumeView} >
-            <FontAwesome style={styles.volume} name="volume-up" size={40} color="#fff700"></FontAwesome>
-            <FontAwesome style={styles.volume} name="headphones" size={40} color="#fff700"></FontAwesome>
-          </View> */}
+         
         </View>
 
         <View style={styles.example}>
@@ -97,14 +95,14 @@ const Lesson = props => {
               <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate("Home")}>
                 <Text style={styles.exText} >Submit</Text>
               </TouchableOpacity>}
-              
           </View>
-          
         </View>
+
+        
+
       </View>
-
-
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 export default Lesson;

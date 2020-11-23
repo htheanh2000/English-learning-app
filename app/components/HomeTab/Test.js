@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, BackHandler, } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, BackHandler,ScrollView ,SafeAreaView } from 'react-native';
 import { Button, ProgressBar, TextInput  } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-
+import {useDispatch,useSelector} from 'react-redux'
+import {updateMapAndLevel} from '../../store/user'
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 const Test = props => {
@@ -18,20 +19,20 @@ const Test = props => {
   const { map, mapLevel } = props.route.params
   const [url, setUrl] = useState(null)
   const [finish, setFinish] = useState(false)
+  const [unFinish, setunFinish] = useState(false)
   const navigation = useNavigation()
   const [array,setArray] = useState([10,1,2,3,4,5,6,7,8,9])
   const [isShu,setIsShu] = useState(false)
-
+  const user = useSelector(state => state.user)
+  const dispatch = useDispatch()
   useEffect(()=> {
     isShu ? null: shuffle(array)
     getImg()
   })
 
   const checkAns = () => {
-    // setScore(score+1)
     if (map.Vocabulary[array[question]].Name === value) {
      setScore(score+1)
-    //  console.log("true");
     }
   }
   const setNextQuestion = async () => {
@@ -39,52 +40,55 @@ const Test = props => {
     setQuestion(question + 1)
     onChangeText('')
     setIsShowTip(false)
-    if (question < 9) {
-        console.log("question",question);
-    }
-  }
-  const setPrevQuestion = async () => {
-    checkAns()
-    onChangeText('')
-    setIsShowTip(false)
-    if (question > 0) {
-      await setQuestion(question - 1)
-    }
   }
 
   const getImg = async () => {
-
     const url = await storage()
       .ref("Maps/" + mapLevel + "/" + map.Vocabulary[array[question]].ImgUrl)
       .getDownloadURL()
     setUrl(url)
 
   }
-  const submit = () => {
+  const submit =async() => {
     checkAns()
-    setFinish(true)
-    console.log("submit",star)
-    console.log("star", Math.floor(score/3));
+    setScore(Math.floor(score/3))
+    const newStar = Math.floor(score/3)
+    if(star > newStar) {
+      setFinish(true)
+      return
+    }
 
-  }
-  const goHome = () => {
-    if(star > Math.floor(score/3)) return
-
+    if(newStar < 1) {
+      setunFinish(true)
+      return
+    }
+    const payload = {
+      level: mapLevel,
+      star :newStar
+    }
+    dispatch(updateMapAndLevel(payload))
+    if(mapLevel > user.level) {
+      if (auth().currentUser) {
+        const userId = auth().currentUser.uid;
+        if (userId) {
+          database()
+          .ref('users/' + userId + "/level/"  )
+          .set(mapLevel)
+        }
+      }
+    }
     if (auth().currentUser) {
       const userId = auth().currentUser.uid;
       if (userId) {
         database()
         .ref('users/' + userId + "/map/"  + mapLevel)
-        .set(Math.floor(score/3))
-
-        // database()
-        //   .ref('users/' + userId + "/map/")
-        //   .once('value')
-        //   .then(snapshot => {
-        //     console.log('User data: ', snapshot.val());
-        //   });
+        .set(newStar)
       }
     }
+    setFinish(true)
+    console.log("star", newStar);
+  }
+  const goHome = () => {
     navigation.navigate("Home")
   }
 
@@ -101,7 +105,6 @@ const Test = props => {
       array[j] = temp;
 
     }
-    console.log("array",array)
 
     await setArray(array); 
     await setIsShu(true)
@@ -111,7 +114,7 @@ const Test = props => {
     setIsShowTip(true)
   }
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.topHeader}>
           <View style={styles.hardMode}>
@@ -125,7 +128,7 @@ const Test = props => {
           </View>
           <Text style={styles.exit} onPress={() => navigation.navigate("Home")}>X</Text>
         </View>
-        <ProgressBar progress={question/10} color="#476491" />
+        <ProgressBar progress={(question+1)/10} color="#476491" />
       </View>
 
       <View style={{ marginTop: 100, alignItems: "center" }}>
@@ -147,14 +150,6 @@ const Test = props => {
         <View style={styles.example}>
 
           <View style={{ flexDirection: "row", justifyContent: "space-around", width: screenWidth * .8 }}>
-            {/* {
-              question !== 0 ?
-                <TouchableOpacity style={styles.btn} onPress={() => setPrevQuestion()} >
-                  <Text style={styles.exText}>Prev</Text>
-                </TouchableOpacity> :
-                null
-            } */}
-
             {question !== 9 ? 
             <TouchableOpacity style={styles.btn} onPress={setNextQuestion}>
               <Text style={styles.exText} >Next</Text>
@@ -179,8 +174,19 @@ const Test = props => {
           <Text style={{fontSize: 20 , color: "#C1C9D4"}}>You get {score}/10</Text>
           <Button style={styles.goHome} onPress={() => goHome()}>Go back Home</Button>
         </View> : null}
-
-    </View>
+      {unFinish ?
+        <View style={styles.modal}>
+              <View style={styles.star}>
+                    <AntDesign name={score >= 1 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
+                    <AntDesign name={score >= 2 ? "star" : "staro"} style={{ padding: 5, marginTop: -20 }} size={40} color="#FFd700"></AntDesign>
+                    <AntDesign name={score >= 3 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
+                </View>
+          <Text style={{ textAlign: "center" , color: "#C1C9D4", fontSize: 30, fontWeight: "bold"}}>Sorry !</Text>
+          <Text style={{fontSize: 20 , color: "#C1C9D4"}}>You get {score}/10</Text>
+          <Text style={{fontSize: 14 , padding:10, textAlign:"center", color: "#C1C9D4"}}>You need a litte lucky to pass the test</Text>
+          <Button style={styles.goHome} onPress={() => goHome()}>Go back Home</Button>
+        </View> : null} 
+    </SafeAreaView>
   );
 };
 export default Test;
@@ -298,8 +304,8 @@ const styles = StyleSheet.create({
   modal: {
     position: "absolute",
     width: 300,
-    height: 200,
-    top: screenHeight / 2 - 150,
+    height: 400,
+    top: screenHeight / 2 - 250,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",

@@ -3,7 +3,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux'
-import { View, KeyboardAvoidingView } from 'react-native';
 //HOme
 import Profile from './components/ProfileTab/Profile'
 import ThemesComponent from './components/ThemesTab/ThemesComponent'
@@ -17,14 +16,16 @@ import Home from './components/HomeTab/Home'
 import RollCallTab from './components/RollCallTab/RollCallTab'
 //Theme 
 import ThemeDetail from './components/ThemesTab/ThemeDetail'
-//
+// Shoptab
 import Shop from './components/shopTab/shop'
 //FirstLogin
 import FirstLogin from './components/FirstLogin/firstLogin'
 // Home 
 import Lesson from './components/HomeTab/Lesson'
 import Test from './components/HomeTab/Test'
-
+// i18n
+import I18n from './i18n/i18n';
+//
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -57,9 +58,7 @@ const settingOptions = {
   headerTitleStyle: {
     fontWeight: 'light',
     fontSize: 20,
-    // margin: 20,
     marginLeft: 20
-    // textAlign: "center"
   },
 }
 
@@ -101,7 +100,6 @@ function Authen() {
 
 
 function mainFlow() {
-  const dispatch = useDispatch()
   return (
       <Tab.Navigator
         initialRouteName="Home"
@@ -122,7 +120,7 @@ function mainFlow() {
           name="Profile"
           component={Profile}
           options={{
-            tabBarLabel: 'Setting',
+            tabBarLabel: I18n.t('Setting'),
             tabBarIcon: ({ color, size }) => (
               <AntDesign name="setting" color={color} size={size} />
             ),
@@ -133,17 +131,17 @@ function mainFlow() {
           name="Themes"
           component={ThemesStackScreen}
           options={{
-            tabBarLabel: 'Themes',
+            tabBarLabel: I18n.t('Reading'),
             tabBarIcon: ({ color, size }) => (
               <MaterialCommunityIcons name="wallpaper" color={color} size={size} />
             ),
           }}
         />
         <Tab.Screen
-          name="Home"
+          name='Home'
           component={HomeStackScreen}
           options={{
-            tabBarLabel: 'Home',
+            tabBarLabel: I18n.t('Home'),
             tabBarIcon: ({ focused, color, size }) => (
               <MaterialCommunityIcons name="home-circle" color={focused ? "#03c04a" : "tomato"} size={32} />
             ),
@@ -153,7 +151,7 @@ function mainFlow() {
           name="4"
           component={Shop}
           options={{
-            tabBarLabel: 'Shop',
+            tabBarLabel: I18n.t('Shop'),
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="diamond-outline" color={color} size={26} />
             ),
@@ -163,7 +161,7 @@ function mainFlow() {
           name="RollCallTab"
           component={RollCallTab}
           options={{
-            tabBarLabel: 'RollCall',
+            tabBarLabel: I18n.t('Mission'),
             tabBarIcon: ({ color }) => (
               <Ionicons name="notifications" color={color} size={26} />
             ),
@@ -179,11 +177,12 @@ export default function App(props) {
   const [isLogined, setIsLogined] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const isUser = useSelector(state => state.user)
-  console.log("App", isUser)
   useEffect(() => {
+   
     AsyncStorage.getItem('user')
       .then((res) => {
         if (res) {
+         
           setIsLogined(true)
         }
         setTimeout(() => {

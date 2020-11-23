@@ -6,46 +6,47 @@ import AsyncStorage from '@react-native-community/async-storage';
 // Slice
 const slice = createSlice({
   name: 'user',
-  initialState:  {
+  initialState: {
     username: null
-  } ,
+  },
   reducers: {
     loginSuccess: (state, action) => {
       console.log("=====login sucessful!======", action.payload)
-      const {rank, username, online, level, exp,map, gold,characters , currentCharacter, rollCalls} = action.payload
+      const { rank, username, online, level, exp, map, gold, characters, currentCharacter, rollCalls } = action.payload
       state.rank = rank,
-      state.username = username,
-      state.online = online,
-      state.level = level,
-      state.exp = exp,
-      state.map = map,
-      state.gold = gold,
-      state.characters = characters
+        state.username = username,
+        state.online = online,
+        state.level = level,
+        state.exp = exp,
+        state.map = map,
+        state.gold = gold,
+        state.characters = characters
       state.currentCharacter = currentCharacter
       state.rollCalls = rollCalls
       AsyncStorage.setItem('user', JSON.stringify(action.payload))
     },
-    status: (state,action) => {
+    status: (state, action) => {
       console.log("set status", state);
-      const {rank, username, online, level, exp,map, gold,characters , currentCharacter, rollCalls} = action.payload
+      const { rank, username, online, level, exp, map, gold, characters, currentCharacter, rollCalls, language } = action.payload
       state.rank = rank,
-      state.username = username,
-      state.online = online,
-      state.level = level,
-      state.exp = exp,
-      state.map = map,
-      state.gold = gold,
-      state.characters = characters
+        state.username = username,
+        state.online = online,
+        state.level = level,
+        state.exp = exp,
+        state.map = map,
+        state.gold = gold,
+        state.characters = characters
       state.currentCharacter = currentCharacter
       state.rollCalls = rollCalls
+      state.language = language
     },
-    logoutSuccess: (state, action) =>  {
+    logoutSuccess: (state, action) => {
       console.log("logoutSuccess")
       state.user = null;
-      auth().signOut().then(function() {
-      // Sign-out successful.
-      console.log("Sign-out successful.");
-      }).catch(function(error) {
+      auth().signOut().then(function () {
+        // Sign-out successful.
+        console.log("Sign-out successful.");
+      }).catch(function (error) {
         console.log("Sign-out error.");
         // An error happened.
       });
@@ -55,7 +56,7 @@ const slice = createSlice({
       if (auth().currentUser) {
         userId = auth().currentUser.uid;
         if (userId) {
-            database()
+          database()
             .ref('users/' + userId)
             .once('value')
             .then(snapshot => {
@@ -73,7 +74,7 @@ const slice = createSlice({
     updateCharactersReducer: (state, action) => {
       const newCha = action.payload
       console.log("updateCharactersReducer", action.payload);
-      if(state.characters) {
+      if (state.characters) {
         state.characters.push(newCha)
       }
       else {
@@ -84,13 +85,34 @@ const slice = createSlice({
       console.log("update User Character Reducer", action.payload);
       state.currentCharacter = action.payload
     },
-    updateUserRollCallReducer : (state,action) => {
+    updateUserRollCallReducer: (state, action) => {
       console.log("update User Roll Call", action.payload);
-      if(state.rollCalls) {
+      if (state.rollCalls) {
         state.rollCalls.push(action.payload)
       }
       else {
         state.rollCalls = [action.payload]
+      }
+    },
+    setLanguageReducer: (state, action) => {
+      console.log("update User Language", action.payload);
+      state.language = action.payload
+    },
+    updateMapAndLevelReducer: (state, action) => {
+      console.log("update User Map", action.payload);
+      const { level, star } = action.payload
+      if (state.map && state.map[level]) {
+        state.map[level] = star
+      }
+      else if (state.map) {
+        state.map.push(star)
+      }
+
+      if (!state.map) {
+        state.map = [0, star]
+      }
+      if (state.level < level) {
+        state.level = level
       }
     }
   },
@@ -99,8 +121,8 @@ const slice = createSlice({
 
 export default slice.reducer
 // Actions
-const { loginSuccess, logoutSuccess,status ,updateGoldReducer,updateCharactersReducer,updateUserCharacterReducer,updateUserRollCallReducer} = slice.actions
-export const login = ( user ) => async dispatch => {
+const { loginSuccess, logoutSuccess, status, updateGoldReducer, updateCharactersReducer, updateUserCharacterReducer, updateUserRollCallReducer, setLanguageReducer, updateMapAndLevelReducer } = slice.actions
+export const login = (user) => async dispatch => {
   try {
     return dispatch(loginSuccess(user))
     // dispatch(loginSuccess({username}));
@@ -117,7 +139,7 @@ export const logout = () => async dispatch => {
   }
 }
 
-export const setStatus =(stt)=> async dispatch => {
+export const setStatus = (stt) => async dispatch => {
   try {
     return dispatch(status(stt))
   } catch (e) {
@@ -125,7 +147,7 @@ export const setStatus =(stt)=> async dispatch => {
   }
 }
 
-export const updateGold =(gold) => async dispatch => {
+export const updateGold = (gold) => async dispatch => {
   try {
     return dispatch(updateGoldReducer(gold))
   }
@@ -135,7 +157,7 @@ export const updateGold =(gold) => async dispatch => {
 }
 
 
-export const updateCharacters =(characters) => async dispatch => {
+export const updateCharacters = (characters) => async dispatch => {
   try {
     return dispatch(updateCharactersReducer(characters))
   }
@@ -144,7 +166,7 @@ export const updateCharacters =(characters) => async dispatch => {
   }
 }
 
-export const updateUserCharacters =(character) => async dispatch => {
+export const updateUserCharacters = (character) => async dispatch => {
   try {
     return dispatch(updateUserCharacterReducer(character))
   }
@@ -152,9 +174,27 @@ export const updateUserCharacters =(character) => async dispatch => {
     return console.error(e.message);
   }
 }
-export const rollCall =(date) => async dispatch => {
+export const rollCall = (date) => async dispatch => {
   try {
     return dispatch(updateUserRollCallReducer(date))
+  }
+  catch (e) {
+    return console.error(e.message);
+  }
+}
+
+export const setLanguage = (language) => async dispatch => {
+  try {
+    return dispatch(setLanguageReducer(language))
+  }
+  catch (e) {
+    return console.error(e.message);
+  }
+}
+
+export const updateMapAndLevel = (payload) => async dispatch => {
+  try {
+    return dispatch(updateMapAndLevelReducer(payload))
   }
   catch (e) {
     return console.error(e.message);

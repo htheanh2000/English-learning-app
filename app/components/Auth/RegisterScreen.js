@@ -11,47 +11,46 @@ import {
     ScrollView,
 } from 'react-native';
 import Loader from './Loader';
-import { Dimensions } from "react-native";
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import { useDispatch, useSelector } from 'react-redux'
-import { login, setStatus } from '../../store/user'
-const screenWidth = Math.round(Dimensions.get('window').width);
-const screenHeight = Math.round(Dimensions.get('window').height);
 import { mainStyles } from '../../styles/mainStyles'
 import AsyncStorage from '@react-native-community/async-storage';
-import characters from '../../Data/characters';
 import FirstLogin from '../FirstLogin/firstLogin';
-
+import { useNavigation } from '@react-navigation/native';
+import {setStatus} from '../../store/user'
 const RegisterScreen = props => {
     const dispatch = useDispatch()
-    let [username, setUsername] = useState('');
+    let [username, setUsername] = useState('Baoanh');
     let [email, setEmail] = useState('');
     let [password, setPassword] = useState('');
     let [firstLogin,setFirstLogin] = useState(false)
     let [loading, setLoading] = useState(false);
     let [errortext, setErrortext] = useState('');
+    const navigation = useNavigation()
     let newUser = {
-        level: 1,
+        level: 0,
         rank: null,
         username: username,
         gold : 10000,
         online: true,
         exp: 0,
-        firstLogin: true,
-        map:[],
+        firstLogin: false,
         history: [],
-        characters: [] 
+        characters: [] ,
+        language: "en"
     }
     const handleSubmitButton = async () => {
         setLoading(true)
 
         if (!username) {
             setErrortext('Please fill ussername');
+            setLoading(false)
             return;
         }
         if (!password) {
             setErrortext('Please fill password');
+            setLoading(false)
             return;
         }
         
@@ -68,8 +67,9 @@ const RegisterScreen = props => {
                     }
                 }
                 AsyncStorage.setItem("user", JSON.stringify(newUser))
-                setLoading(false)
+                // dispatch(setStatus(newUser))
                 setFirstLogin(true)
+                setLoading(false)
             })
             .catch(error => {
                 if (error.code === 'auth/email-already-in-use') {
@@ -154,7 +154,7 @@ const RegisterScreen = props => {
                     </TouchableOpacity> */}
                 </KeyboardAvoidingView>
             </ScrollView>
-        </View> : <FirstLogin/>
+        </View> : <FirstLogin user={newUser}/>
     );
 };
 export default RegisterScreen;
