@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, BackHandler,ScrollView ,SafeAreaView } from 'react-native';
-import { Button, ProgressBar, TextInput  } from 'react-native-paper';
+import { View, Text, StyleSheet, FastImage, Dimensions, TouchableOpacity, BackHandler, ScrollView, SafeAreaView } from 'react-native';
+import { Button, ProgressBar, TextInput } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import storage from '@react-native-firebase/storage';
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-import {useDispatch,useSelector} from 'react-redux'
-import {updateMapAndLevel} from '../../store/user'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateMapAndLevel } from '../../store/user'
+import Game1 from './TestGame/Game1'
+import Game2 from './TestGame/Game2'
+
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 const Test = props => {
-  const {star} = props
+  const { star } = props
   const [isShowTip, setIsShowTip] = useState(false)
   let [question, setQuestion] = useState(0)
   const [value, onChangeText] = useState('');
@@ -21,22 +24,39 @@ const Test = props => {
   const [finish, setFinish] = useState(false)
   const [unFinish, setunFinish] = useState(false)
   const navigation = useNavigation()
-  const [array,setArray] = useState([10,1,2,3,4,5,6,7,8,9])
-  const [isShu,setIsShu] = useState(false)
+  const [array, setArray] = useState([])
+  const [isShu, setIsShu] = useState(false)
   const user = useSelector(state => state.user)
   const dispatch = useDispatch()
-  useEffect(()=> {
-    isShu ? null: shuffle(array)
-    getImg()
-  })
+  const [arr, setArr] = useState('')
+  const rArr = []
 
-  const checkAns = () => {
-    if (map.Vocabulary[array[question]].Name === value) {
-     setScore(score+1)
+
+  const randomNumber =async()=> {
+    while (rArr.length < 10) {
+      rArr.push(Math.floor((Math.random() * 10) + 1))
     }
+    setArr(rArr)
   }
-  const setNextQuestion = async () => {
-    checkAns()
+  useEffect(()=>{
+    randomNumber()
+  },[])
+ 
+
+  const checkAns = (ans) => {
+    if (ans) {
+      setScore(score + 1)
+    }
+    console.log(ans)
+  }
+  const setNextQuestion = async (ans) => {
+    console.log("question", question)
+    if(question === 9) 
+    {
+      submit()
+      return
+    }
+    checkAns(ans)
     setQuestion(question + 1)
     onChangeText('')
     setIsShowTip(false)
@@ -47,33 +67,31 @@ const Test = props => {
       .ref("Maps/" + mapLevel + "/" + map.Vocabulary[array[question]].ImgUrl)
       .getDownloadURL()
     setUrl(url)
-
   }
-  const submit =async() => {
-    checkAns()
-    setScore(Math.floor(score/3))
-    const newStar = Math.floor(score/3)
-    if(star > newStar) {
+  const submit = async () => {
+    setScore(Math.floor(score / 3))
+    const newStar = Math.floor(score / 3)
+    if (star > newStar) {
       setFinish(true)
       return
     }
 
-    if(newStar < 1) {
+    if (newStar < 1) {
       setunFinish(true)
       return
     }
     const payload = {
       level: mapLevel,
-      star :newStar
+      star: newStar
     }
     dispatch(updateMapAndLevel(payload))
-    if(mapLevel > user.level) {
+    if (mapLevel > user.level) {
       if (auth().currentUser) {
         const userId = auth().currentUser.uid;
         if (userId) {
           database()
-          .ref('users/' + userId + "/level/"  )
-          .set(mapLevel)
+            .ref('users/' + userId + "/level/")
+            .set(mapLevel)
         }
       }
     }
@@ -81,8 +99,8 @@ const Test = props => {
       const userId = auth().currentUser.uid;
       if (userId) {
         database()
-        .ref('users/' + userId + "/map/"  + mapLevel)
-        .set(newStar)
+          .ref('users/' + userId + "/map/" + mapLevel)
+          .set(newStar)
       }
     }
     setFinish(true)
@@ -92,26 +110,17 @@ const Test = props => {
     navigation.navigate("Home")
   }
 
-  const shuffle =async(array)=> {
-    var i = array.length,
-      j = 0,
-      temp;
 
-    while (i--) {
-
-      j = Math.floor(Math.random() * (i + 1));
-      temp = array[i];
-      array[i] = array[j];
-      array[j] = temp;
-
-    }
-
-    await setArray(array); 
-    await setIsShu(true)
-
-  }
-  const ShowTip=()=> {
+  const ShowTip = () => {
     setIsShowTip(true)
+  }
+
+  const renderGame=()=> {
+    return(
+      arr ?
+      <Game2 mapLevel={mapLevel} onPress={(ans)=>setNextQuestion(ans)} questionList={map.Vocabulary} question={arr[question]}></Game2>
+      : null
+    )
   }
   return (
     <SafeAreaView style={styles.container}>
@@ -121,71 +130,43 @@ const Test = props => {
             <AntDesign name="heart" size={30} color="#ffa8a8"></AntDesign>
           </View>
           <View>
-            <Text style={styles.process}>{question+1}/10</Text>
+            <Text style={styles.process}>{question + 1}/10</Text>
             <TouchableOpacity>
-               <Text style={styles.title}>{map.Name}</Text> 
+              <Text style={styles.title}>{map.Name}</Text>
             </TouchableOpacity>
           </View>
           <Text style={styles.exit} onPress={() => navigation.navigate("Home")}>X</Text>
         </View>
-        <ProgressBar progress={(question+1)/10} color="#476491" />
+        <ProgressBar progress={(question + 1) / 10} color="#476491" />
       </View>
 
-      <View style={{ marginTop: 100, alignItems: "center" }}>
-        <View style={styles.vocaView}>
-          {
-            url ?
-              <Image style={styles.image} source={{
-                uri: url,
-              }}></Image> : null
-          }
-          {
-          isShowTip ?  <Text style={styles.text}>{map.Vocabulary[array[question]].Name}</Text> : <Button style={styles.showtip} onPress={()=> ShowTip()} color="#fff">Show Tip</Button>
-          }          
-
-          <TextInput style={styles.textinput}  onChangeText={text => onChangeText(text)}
-           value={value}></TextInput>
-        </View>
-
-        <View style={styles.example}>
-
-          <View style={{ flexDirection: "row", justifyContent: "space-around", width: screenWidth * .8 }}>
-            {question !== 9 ? 
-            <TouchableOpacity style={styles.btn} onPress={setNextQuestion}>
-              <Text style={styles.exText} >Next</Text>
-            </TouchableOpacity> : 
-            <TouchableOpacity style={styles.btn} onPress={() => submit()}>
-                <Text style={styles.exText} >Submit</Text>
-              </TouchableOpacity>}
-
-          </View>
-
-        </View>
-      </View>
-
+      {
+        renderGame()
+      }
+       
       {finish ?
         <View style={styles.modal}>
-              <View style={styles.star}>
-                    <AntDesign name={score >= 1 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
-                    <AntDesign name={score >= 2 ? "star" : "staro"} style={{ padding: 5, marginTop: -20 }} size={40} color="#FFd700"></AntDesign>
-                    <AntDesign name={score >= 3 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
-                </View>
-          <Text style={{ textAlign: "center" , color: "#C1C9D4", fontSize: 30, fontWeight: "bold"}}>Congratulation !</Text>
-          <Text style={{fontSize: 20 , color: "#C1C9D4"}}>You get {score}/10</Text>
+          <View style={styles.star}>
+            <AntDesign name={score >= 1 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
+            <AntDesign name={score >= 2 ? "star" : "staro"} style={{ padding: 5, marginTop: -20 }} size={40} color="#FFd700"></AntDesign>
+            <AntDesign name={score >= 3 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
+          </View>
+          <Text style={{ textAlign: "center", color: "#C1C9D4", fontSize: 30, fontWeight: "bold" }}>Congratulation !</Text>
+          <Text style={{ fontSize: 20, color: "#C1C9D4" }}>You get {score}/10</Text>
           <Button style={styles.goHome} onPress={() => goHome()}>Go back Home</Button>
         </View> : null}
       {unFinish ?
         <View style={styles.modal}>
-              <View style={styles.star}>
-                    <AntDesign name={score >= 1 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
-                    <AntDesign name={score >= 2 ? "star" : "staro"} style={{ padding: 5, marginTop: -20 }} size={40} color="#FFd700"></AntDesign>
-                    <AntDesign name={score >= 3 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
-                </View>
-          <Text style={{ textAlign: "center" , color: "#C1C9D4", fontSize: 30, fontWeight: "bold"}}>Sorry !</Text>
-          <Text style={{fontSize: 20 , color: "#C1C9D4"}}>You get {score}/10</Text>
-          <Text style={{fontSize: 14 , padding:10, textAlign:"center", color: "#C1C9D4"}}>You need a litte lucky to pass the test</Text>
+          <View style={styles.star}>
+            <AntDesign name={score >= 1 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
+            <AntDesign name={score >= 2 ? "star" : "staro"} style={{ padding: 5, marginTop: -20 }} size={40} color="#FFd700"></AntDesign>
+            <AntDesign name={score >= 3 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
+          </View>
+          <Text style={{ textAlign: "center", color: "#C1C9D4", fontSize: 30, fontWeight: "bold" }}>Sorry !</Text>
+          <Text style={{ fontSize: 20, color: "#C1C9D4" }}>You get {score} star</Text>
+          <Text style={{ fontSize: 14, padding: 10, textAlign: "center", color: "#C1C9D4" }}>You need a litte lucky to pass the test</Text>
           <Button style={styles.goHome} onPress={() => goHome()}>Go back Home</Button>
-        </View> : null} 
+        </View> : null}
     </SafeAreaView>
   );
 };
@@ -291,7 +272,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#95f597"
   },
   textinput: {
-    width:150,
+    width: 150,
     height: 60,
     backgroundColor: "transparent",
     textAlign: "center",
@@ -316,7 +297,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   star: {
-    flexDirection:"row",
+    flexDirection: "row",
     alignItems: "center",
     // padding: 20
   },
@@ -324,7 +305,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 40,
     backgroundColor: "#b3d0ff",
-    alignItems:"center",
+    alignItems: "center",
     justifyContent: "center",
     marginTop: 10
   }

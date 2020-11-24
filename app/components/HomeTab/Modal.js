@@ -11,7 +11,6 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 const Modal = props => {
 
     const { map, star, mapLevel } = props
-    console.log("Modal props", props)
     const navigation = useNavigation()
     const [url, setUrl] = useState(null)
     const getImg = async () => {
@@ -60,8 +59,7 @@ const Modal = props => {
                     <TouchableOpacity style={[styles.btn, { backgroundColor: "#b3d8ff" }]}
                         title="Test"
                         onPress={() => {
-                            console.log("props", props);
-                            props.onPress()
+                                props.onPress()
                             navigation.navigate('Test', {
                                 map: map,
                                 mapLevel: mapLevel,
