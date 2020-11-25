@@ -14,8 +14,10 @@ const Game2 = props => {
     const [correct, setCorrect] = useState(null)
     const [imgQues, setImgQues] = useState("")
     const [id, setIndex] = useState(-1)
+    const [showTip, setShowTip] = useState(false)
     useEffect(() => {
         randomNum()
+        setShowTip(false)
     }, [question])
 
 
@@ -42,24 +44,22 @@ const Game2 = props => {
         }
         setCorrect(pos)
 
-        ansArr.map(async (item) => {
+        await Promise.all( ansArr.map(async (item) => {
             anotherArr.push({
                 name: questionList[item.num].Name,
                 status: item.status
             })
-        })
-
-        setTimeout(function () { setArr(anotherArr) }, 500);
-
+        }))
+        setArr(anotherArr)
     }
 
     const pressAns = (ans, index) => {
         setIndex(index)
         if (ans) {
-            setColor("green")
+            setColor("#3ddb68")
         }
         else {
-            setColor("red")
+            setColor("#f2440f")
         }
         setTimeout(function () {
             setColor("#fff")
@@ -100,6 +100,11 @@ const Game2 = props => {
                         }}></FastImage> : null
                 }
             </View>
+
+            <TouchableOpacity style={[styles.showTipView, {backgroundColor:"#fff"}]} onPress={() => setShowTip(true)}>
+                <Text style={styles.questionText}>{showTip ? questionList[question].Means : "SHOW TIP"} </Text>
+            </TouchableOpacity>
+
             {renderAns()}
             <View style={styles.AnswerView}></View>
         </View>
@@ -109,6 +114,12 @@ export default Game2;
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
+    },
+    showTipView: {
+        marginBottom: 20,
+        padding: 10,
+        borderRadius: 10,
+        width: 150,
     },
     questionView: {
         marginBottom: 50,

@@ -21,6 +21,9 @@ const Modal = props => {
     }
     getImg()
 
+    useEffect(()=> {
+        
+    })
     return (
         <View style={styles.container}>
             {

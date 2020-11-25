@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
 import FastImage from 'react-native-fast-image'
 import storage from '@react-native-firebase/storage';
-import { useNavigation } from '@react-navigation/native';
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
@@ -35,7 +34,8 @@ const Game1 = props => {
            }
            setCorrect(pos)
 
-            ansArr.map(async(item) => {
+
+           await Promise.all(ansArr.map(async(item) => {
                  const url = await storage()
                     .ref("Maps/" + mapLevel + "/" +questionList[item.num].ImgUrl)
                     .getDownloadURL()
@@ -43,18 +43,16 @@ const Game1 = props => {
                     url: url,
                     status: item.status
                 })
-           })
-
-           setTimeout(function(){  setArr(anotherArr) }, 500);
-
+           }))
+           setArr(anotherArr)
     }   
 
     const pressAns =(ans)=> {
       if(ans) {
-          setColor("green")
+          setColor("#3ddb68")
       }
       else{
-        setColor("red")
+        setColor("#f2440f")
       }
       setTimeout(function()
       {
@@ -111,6 +109,7 @@ const Game1 = props => {
             <View style={[styles.questionView, {backgroundColor:color}]}>
                 <Text style={styles.questionText}>{questionList[question].Name}</Text>
             </View>
+            
             {renderAns()}
             <View style={styles.AnswerView}></View>
         </View>

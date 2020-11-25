@@ -10,118 +10,228 @@ import { useDispatch, useSelector } from 'react-redux'
 import { updateMapAndLevel } from '../../store/user'
 import Game1 from './TestGame/Game1'
 import Game2 from './TestGame/Game2'
+import Game3 from './TestGame/Game3'
+import Game4 from './TestGame/Game4'
+import admob, { MaxAdContentRating } from '@react-native-firebase/admob';
+import {updateGold} from '../../store/user'
+import { InterstitialAd, RewardedAd, RewardedAdEventType, TestIds, AdEventType } from '@react-native-firebase/admob';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 const Test = props => {
   const { star } = props
-  const [isShowTip, setIsShowTip] = useState(false)
   let [question, setQuestion] = useState(0)
-  const [value, onChangeText] = useState('');
   const [score, setScore] = useState(0)
   const { map, mapLevel } = props.route.params
-  const [url, setUrl] = useState(null)
   const [finish, setFinish] = useState(false)
   const [unFinish, setunFinish] = useState(false)
   const navigation = useNavigation()
-  const [array, setArray] = useState([])
-  const [isShu, setIsShu] = useState(false)
   const user = useSelector(state => state.user)
   const dispatch = useDispatch()
   const [arr, setArr] = useState('')
   const rArr = []
+  const [gameType, setGameType] = useState(3)
+  const [loaded, setLoaded] = useState(false);
 
+  const adUnitId = __DEV__ ? TestIds.REWARDED  : 'ca-app-pub-1626321943018250~1658020858';
 
-  const randomNumber =async()=> {
+  const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+    keywords: ['fashion', 'clothing'],
+  });
+
+  const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+    requestNonPersonalizedAdsOnly: true,
+    keywords: ['fashion', 'clothing'],
+  });
+
+  const randomNumber = async () => {
     while (rArr.length < 10) {
-      rArr.push(Math.floor((Math.random() * 10) + 1))
+      const num = Math.floor((Math.random() * 10) + 1)
+      if (rArr.indexOf(num) === -1) {
+        rArr.push(num)
+      }
     }
     setArr(rArr)
   }
-  useEffect(()=>{
+  useEffect(() => {
     randomNumber()
-  },[])
- 
+  }, [])
+
+  useEffect(() => {
+    randomGameType()
+  }, question)
+
+  useEffect(() => {
+
+    admob()
+      .setRequestConfiguration({
+        // Update all future requests suitable for parental guidance
+        maxAdContentRating: MaxAdContentRating.PG,
+
+        // Indicates that you want your content treated as child-directed for purposes of COPPA.
+        tagForChildDirectedTreatment: true,
+
+        // Indicates that you want the ad request to be handled in a
+        // manner suitable for users under the age of consent.
+        tagForUnderAgeOfConsent: true,
+      })
+      .then(() => {
+        // Request config successfully set!
+        console.log("Request config successfully set!")
+      });
+
+
+      const eventListener = rewarded.onAdEvent((type, error, reward) => {
+        if (type === RewardedAdEventType.LOADED) {
+          setLoaded(true);
+        }
+  
+        if (type === RewardedAdEventType.EARNED_REWARD) {
+          console.log('User earned reward of ', reward);
+        }
+      });
+  
+      // Start loading the rewarded ad straight away
+      rewarded.load();
+  
+      // Unsubscribe from events on unmount
+      return () => {
+        eventListener();
+      };
+
+    }, []);
+
+  const  showInterstitialAd = () => {
+      // Create a new instance
+      const interstitialAd = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
+  
+      // Add event handlers
+      interstitialAd.onAdEvent((type, error) => {
+          if (type === AdEventType.LOADED) {
+              interstitialAd.show();
+          }
+      });
+  
+      // Load a new advert
+      interstitialAd.load();
+  }
+  const randomGameType = () => {
+    const num = Math.floor((Math.random() * 4)) + 1
+    setGameType(num)
+  }
 
   const checkAns = (ans) => {
     if (ans) {
       setScore(score + 1)
     }
-    console.log(ans)
   }
   const setNextQuestion = async (ans) => {
-    console.log("question", question)
-    if(question === 9) 
-    {
+    randomGameType()
+    if (question === 9) {
       submit()
       return
     }
     checkAns(ans)
     setQuestion(question + 1)
-    onChangeText('')
-    setIsShowTip(false)
   }
 
-  const getImg = async () => {
-    const url = await storage()
-      .ref("Maps/" + mapLevel + "/" + map.Vocabulary[array[question]].ImgUrl)
-      .getDownloadURL()
-    setUrl(url)
-  }
+
   const submit = async () => {
-    setScore(Math.floor(score / 3))
     const newStar = Math.floor(score / 3)
     if (star > newStar) {
       setFinish(true)
       return
     }
-
-    if (newStar < 1) {
-      setunFinish(true)
-      return
-    }
-    const payload = {
-      level: mapLevel,
-      star: newStar
-    }
-    dispatch(updateMapAndLevel(payload))
-    if (mapLevel > user.level) {
+    else {
+      if (newStar < 1) {
+        setunFinish(true)
+        return
+      }
+      const payload = {
+        level: mapLevel,
+        star: newStar
+      }
+      dispatch(updateMapAndLevel(payload))
+      if (mapLevel > user.level) {
+        if (auth().currentUser) {
+          const userId = auth().currentUser.uid;
+          if (userId) {
+            database()
+              .ref('users/' + userId + "/level/")
+              .set(mapLevel)
+          }
+        }
+      }
       if (auth().currentUser) {
         const userId = auth().currentUser.uid;
         if (userId) {
           database()
-            .ref('users/' + userId + "/level/")
-            .set(mapLevel)
+            .ref('users/' + userId + "/map/" + mapLevel)
+            .set(newStar)
         }
       }
+      setFinish(true)
+      console.log("star", newStar);
     }
+  }
+  const goHome = (x) => {
+    console.log("goHone")
+    const newGold = user.gold + score*10*x + 10
     if (auth().currentUser) {
       const userId = auth().currentUser.uid;
       if (userId) {
         database()
-          .ref('users/' + userId + "/map/" + mapLevel)
-          .set(newStar)
+        .ref('users/' + userId)
+        .update({
+          gold: newGold,
+        })
+
       }
     }
-    setFinish(true)
-    console.log("star", newStar);
-  }
-  const goHome = () => {
+    dispatch(updateGold(newGold))
     navigation.navigate("Home")
   }
 
 
-  const ShowTip = () => {
-    setIsShowTip(true)
-  }
 
-  const renderGame=()=> {
-    return(
-      arr ?
-      <Game2 mapLevel={mapLevel} onPress={(ans)=>setNextQuestion(ans)} questionList={map.Vocabulary} question={arr[question]}></Game2>
-      : null
+  const renderGame1 = () => {
+    return (
+      arr ? <Game1 mapLevel={mapLevel} onPress={(ans) => setNextQuestion(ans)} questionList={map.Vocabulary} question={arr[question]}></Game1> : null
     )
   }
+  const renderGame2 = () => {
+    return (
+      arr ? <Game2 mapLevel={mapLevel} onPress={(ans) => setNextQuestion(ans)} questionList={map.Vocabulary} question={arr[question]}></Game2> : null
+    )
+  }
+  const renderGame3 = () => {
+    return (
+      arr ? <Game3 mapLevel={mapLevel} onPress={(ans) => setNextQuestion(ans)} questionList={map.Vocabulary} question={arr[question]}></Game3> : null
+    )
+  }
+
+  const renderGame4 = () => {
+    return (
+      arr ? <Game4 mapLevel={mapLevel} onPress={(ans) => setNextQuestion(ans)} questionList={map.Vocabulary} question={arr[question]}></Game4> : null
+    )
+  }
+  
+
+  const showRewardAd = () => {
+    rewarded.onAdEvent((type, error) => {
+        if (type === RewardedAdEventType.LOADED) {
+          rewarded.show();
+        }
+
+        if (type === RewardedAdEventType.EARNED_REWARD) {
+            console.log('User earned reward of 5 lives');
+            goHome(2)
+        }
+    });
+    rewarded.load();
+}
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -139,11 +249,23 @@ const Test = props => {
         </View>
         <ProgressBar progress={(question + 1) / 10} color="#476491" />
       </View>
+    
+      {
+        gameType === 1 ? renderGame1() : null
+      }
 
       {
-        renderGame()
+        gameType === 2 ? renderGame2() : null
       }
-       
+
+      {
+        gameType === 3 ? renderGame3() : null
+      }
+
+      {
+        gameType === 4 ? renderGame4() : null
+      }
+
       {finish ?
         <View style={styles.modal}>
           <View style={styles.star}>
@@ -152,8 +274,9 @@ const Test = props => {
             <AntDesign name={score >= 3 ? "star" : "staro"} style={{ padding: 5 }} size={30} color="#FFd700"></AntDesign>
           </View>
           <Text style={{ textAlign: "center", color: "#C1C9D4", fontSize: 30, fontWeight: "bold" }}>Congratulation !</Text>
-          <Text style={{ fontSize: 20, color: "#C1C9D4" }}>You get {score}/10</Text>
-          <Button style={styles.goHome} onPress={() => goHome()}>Go back Home</Button>
+          <Text style={{ fontSize: 20, color: "#C1C9D4" }}>You get {score*10} Gold</Text>
+          <Button style={styles.goHome} onPress={() => goHome(1)}>Go back Home</Button>
+          <Button style={styles.goHome} onPress={() => showRewardAd()}>QC để x2 Gold</Button>
         </View> : null}
       {unFinish ?
         <View style={styles.modal}>

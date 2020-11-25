@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, BackHandler, Button } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, BackHandler } from 'react-native';
+import { Button } from 'react-native-paper'
 import Quotes from '../../Data/Quotes.json'
 import Bg from '../../Data/Bg'
 import Modal from './Modal'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
+import FastImage from 'react-native-fast-image'
 import AsyncStorage from '@react-native-community/async-storage';
-import { setStatus } from '../../store/user'
+import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../../components/Auth/Loader'
 import localMap from '../../Data/map'
+import { useNavigation } from '@react-navigation/native';
 import Data from '../../Data/characters'
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -24,16 +27,20 @@ const Home = props => {
   const [mapLevel, setMapLevel] = useState('1')
   const [star, setStar] = useState(0)
   const [loading, setLoading] = useState(false)
-  const [index,setIndex] = useState("")
+  const [index, setIndex] = useState("")
+  const navigation = useNavigation();
   useEffect(() => {
     Data.map(item => {
-      if(item.name === user.currentCharacter) {
+      if (item.name === user.currentCharacter) {
         setIndex(item.id)
       }
     })
   })
 
- 
+  const PlayGame=()=> {
+    navigation.navigate("Game")
+  }
+
   const checkUserPassMap = async () => {
     if (user.map && user.map[mapLevel]) {
       setStar(user.map[mapLevel])
@@ -42,8 +49,23 @@ const Home = props => {
       setStar(0)
     }
   }
+
+  const callApi = () => {
+    console.log("call api")
+    var options = {
+      method: 'GET',
+      url: 'https://api.datamuse.com/words?ml=duck&sp=d*&max=1',
+    };
+    
+    axios.request(options).then(function (response) {
+      console.log(response.data);
+    }).catch(function (error) {
+      console.error(error);
+    });
+  }
+
   const press = async (mapLevel) => {
-    if(user.level + 1 <  mapLevel)  return
+    if (user.level + 1 < mapLevel) return
     setLoading(true)
     await setMapLevel(mapLevel)
     await database()
@@ -58,16 +80,16 @@ const Home = props => {
     setShowModal(true)
     setLoading(false)
   }
-  const mapColor =(level)=> {
-    if(user.map) {
-      if(user.map[level]) {
+  const mapColor = (level) => {
+    if (user.map) {
+      if (user.map[level]) {
         return "#e3d932"
       }
     }
-    if(user.level+1 === level) {
+    if (user.level + 1 === level) {
       return "green"
     }
-   
+
     return "#b5b5b5"
   }
   return (
@@ -80,12 +102,12 @@ const Home = props => {
         {
           localMap.map(item => {
             return (
-              <TouchableOpacity style={[styles.btnModal, {   backgroundColor:mapColor(item.level), top: item.top, left: item.left }]}  onPress={() => press(item.level)} >
-                  <Text style={{ color: "#fff", fontSize: 25, fontWeight: "bold", textAlign: "center" }}>{item.level}</Text>
-                    {
-                        item.level === user.level+1  && index > 0 ? 
-                        <Image style={styles.character} source={Data[index].uri}></Image> : null
-                    }
+              <TouchableOpacity style={[styles.btnModal, { backgroundColor: mapColor(item.level), top: item.top, left: item.left }]} onPress={() => press(item.level)} >
+                <Text style={{ color: "#fff", fontSize: 25, fontWeight: "bold", textAlign: "center" }}>{item.level}</Text>
+                {
+                  item.level === user.level + 1 && index > 0 ?
+                    <Image style={styles.character} source={Data[index].uri}></Image> : null
+                }
               </TouchableOpacity>
             )
           })
@@ -96,6 +118,10 @@ const Home = props => {
           <Modal star={star} onPress={() => setShowModal(false)} map={map} mapLevel={mapLevel} mapName={mapName} />
         </TouchableOpacity> : null
       }
+
+      <TouchableOpacity style={styles.universe} onPress={() => PlayGame()}>
+          <FastImage style={styles.universe} source={require('../../assets/universe.jpg')}></FastImage>
+      </TouchableOpacity>
 
     </View>
   );
@@ -159,10 +185,21 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   character: {
-    top:-40,  
+    top: -40,
     resizeMode: "contain",
     height: "100%",
     zIndex: 999,
-    position:"absolute"
+    position: "absolute"
+  },
+  btn: {
+    backgroundColor: "#fff"
+  },
+  universe: {
+    width:80,
+    height:80,
+    borderRadius: 40,
+    position:"absolute",
+    top:5,
+    left:5
   }
 }); 

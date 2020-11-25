@@ -23,6 +23,7 @@ import FirstLogin from './components/FirstLogin/firstLogin'
 // Home 
 import Lesson from './components/HomeTab/Lesson'
 import Test from './components/HomeTab/Test'
+import Game from './components/HomeTab/Game/Noichu'
 // i18n
 import I18n from './i18n/i18n';
 //
@@ -81,8 +82,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name="Home" component={Home} options={AuthOptions} />
       <HomeStack.Screen name="Lesson" component={Lesson} options={AuthOptions} />
       <HomeStack.Screen name="Test" component={Test} options={AuthOptions} />
-      <HomeStack.Screen name="Shop" component={Shop} options={AuthOptions} />
-      <HomeStack.Screen name="RollCallTab" component={RollCallTab} options={AuthOptions} />
+      <HomeStack.Screen name="Game" component={Game} options={AuthOptions} />
     </HomeStack.Navigator>
   );
 }
