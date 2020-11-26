@@ -7,54 +7,24 @@ const heightR = Dimensions.get("screen").height;
 
 const DATA = [
     {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97fg3",
-        url: "https://source.unsplash.com/random/1",
-        title: "First Item",
+        id: 1,
+        url: require('../../assets/Story/Story.jpg'),
+        title: "Story",
     },
     {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-        url: "https://source.unsplash.com/random/2",
-        title: "Second Item",
+        id: 2,
+        url: require('../../assets/Story/Story.jpg'),
+        title: "Story",
     },
     {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72",
-        url: "https://source.unsplash.com/random/3",
-        title: "Third Item",
+        id: 3,
+        url: require('../../assets/Story/Story.jpg'),
+        title: "Story",
     },
     {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72",
-        url: "https://source.unsplash.com/random/4",
-        title: "Third Item",
-    },
-    {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72",
-        url: "https://source.unsplash.com/random/5",
-        title: "Third Item",
-    },
-    {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97fg3",
-        url: "https://source.unsplash.com/random/6",
-        title: "First Item",
-    },
-    {
-        id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-        url: "https://source.unsplash.com/random/7",
-        title: "Second Item",
-    },
-    {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72",
-        url: "https://source.unsplash.com/random/8",
-        title: "Third Item",
-    },
-    {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72",
-        url: "https://source.unsplash.com/random/9",
-        title: "Third Item",
-    },
-    {
-        id: "58694a0f-3da1-471f-bd96-145571e29d72",
-        url: "https://source.unsplash.com/random/",
-        title: "Third Item",
+        id: 4,
+        url: require('../../assets/Story/Story.jpg'),
+        title: "Story",
     },
 ];
 
@@ -62,19 +32,18 @@ const leftData = DATA.slice(0, DATA.length / 2)
 const rightData = DATA.slice(DATA.length / 2)
 
 
-const ThemesComponent = () => {
+const Training = () => {
     const [selectedId, setSelectedId] = useState(null);
     const navigation = useNavigation();
     const Item = ({ item, onPress, style }) => (
         <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-            <Image style={styles.image} source={{ uri: item.url }} />
+            <Image style={styles.image} source={item.url} />
             <Text style={styles.text}>{item.title}</Text>
         </TouchableOpacity>
     );
 
     function onPressItem() {
-
-        navigation.navigate("ThemeDetail")
+        navigation.navigate("Story")
     }
 
     const renderItem = ({ item }) => {
@@ -216,4 +185,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ThemesComponent;
+export default Training;

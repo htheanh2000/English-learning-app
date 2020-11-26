@@ -7,8 +7,6 @@ import Modal from './Modal'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 import FastImage from 'react-native-fast-image'
-import AsyncStorage from '@react-native-community/async-storage';
-import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../../components/Auth/Loader'
 import localMap from '../../Data/map'
@@ -50,20 +48,6 @@ const Home = props => {
     }
   }
 
-  const callApi = () => {
-    console.log("call api")
-    var options = {
-      method: 'GET',
-      url: 'https://api.datamuse.com/words?ml=duck&sp=d*&max=1',
-    };
-    
-    axios.request(options).then(function (response) {
-      console.log(response.data);
-    }).catch(function (error) {
-      console.error(error);
-    });
-  }
-
   const press = async (mapLevel) => {
     if (user.level + 1 < mapLevel) return
     setLoading(true)
@@ -76,6 +60,7 @@ const Home = props => {
         setMap(maps)
         setMapName(maps.Name)
       });
+      
     await checkUserPassMap()
     setShowModal(true)
     setLoading(false)

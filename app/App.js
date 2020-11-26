@@ -5,7 +5,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux'
 //HOme
 import Profile from './components/ProfileTab/Profile'
-import ThemesComponent from './components/ThemesTab/ThemesComponent'
+// Training tab
+import Training from './components/TrainingTab/Training'
+import Story from './components/TrainingTab/Story'
+import StoryTest from './components/TrainingTab/StoryTest'
 //Auth 
 import SplashScreen from './components/Auth/SplashScreen'
 import LoginScreen from './components/Auth/LoginScreen'
@@ -15,7 +18,6 @@ import Home from './components/HomeTab/Home'
 // Roll Call Tab
 import RollCallTab from './components/RollCallTab/RollCallTab'
 //Theme 
-import ThemeDetail from './components/ThemesTab/ThemeDetail'
 // Shoptab
 import Shop from './components/shopTab/shop'
 //FirstLogin
@@ -65,11 +67,12 @@ const settingOptions = {
 
 const ThemesStack = createStackNavigator();
 
-function ThemesStackScreen() {
+function TrainingStackScreen() {
   return (
-    <ThemesStack.Navigator initialRouteName="ThemeComponent">
-      <ThemesStack.Screen name="ThemeComponent" component={ThemesComponent} options={AuthOptions} />
-      <ThemesStack.Screen name="ThemeDetail" component={ThemeDetail} options={AuthOptions} />
+    <ThemesStack.Navigator initialRouteName="Training">
+      <ThemesStack.Screen name="Story" component={Story} options={AuthOptions} />
+      <ThemesStack.Screen name="Training" component={Training} options={AuthOptions} />
+      <ThemesStack.Screen name="StoryTest" component={StoryTest} options={AuthOptions} />
     </ThemesStack.Navigator>
   );
 }
@@ -78,7 +81,7 @@ const HomeStack = createStackNavigator();
 
 function HomeStackScreen() {
   return (
-    <HomeStack.Navigator initialRouteName="ThemeComponent">
+    <HomeStack.Navigator initialRouteName="Home">
       <HomeStack.Screen name="Home" component={Home} options={AuthOptions} />
       <HomeStack.Screen name="Lesson" component={Lesson} options={AuthOptions} />
       <HomeStack.Screen name="Test" component={Test} options={AuthOptions} />
@@ -128,8 +131,8 @@ function mainFlow() {
         />
 
         <Tab.Screen
-          name="Themes"
-          component={ThemesStackScreen}
+          name="Training"
+          component={TrainingStackScreen}
           options={{
             tabBarLabel: I18n.t('Reading'),
             tabBarIcon: ({ color, size }) => (

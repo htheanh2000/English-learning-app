@@ -11,34 +11,63 @@ import axios from "axios";
 
 const Game = props => {
 
-    const [arr, setArr] = useState([ {name: "WitchWorld" , mean: "Thế giới phù thủy"} ])
+    const [arr, setArr] = useState([{ name: "WitchWorld", mean: "Thế giới phù thủy" }])
     const [value, onChangeText] = React.useState("");
     const [nextWord, setNextWord] = React.useState("");
     const [error, setError] = React.useState("");
     const [score, setScore] = React.useState(0);
+    const [translate, setTranslate] = React.useState(-1)
     useEffect(() => {
         setNextWord("")
         onChangeText("")
         setError("")
     }, [score])
 
-    const callApi = async (url, value) => {
+    const callApi = async (url, newVoca) => {
         console.log("call api")
         var options = {
             method: 'GET',
             url: url,
         };
+        let newWorld = {}
 
         axios.request(options)
-            .then(function (response) {
+            .then(function async(response) {
                 console.log(response.data);
+                // Tra từ 
+                const rNum = Math.floor(Math.random() * 10);
 
-                const newVoca = {
-                    name: response.data[0].word,
-                    mean: "API"
-                }
+                console.log("call check api")
+                var options = {
+                    method: 'GET',
+                    url: "https://api.tracau.vn/WBBcwnwQpV89/s/" + response.data[rNum].word + "/en",
+                };
 
-                setArr([...arr, value, newVoca)
+                const enWord = response.data[rNum].word
+
+                 axios.request(options)
+                    .then(function (response) {
+                        console.log("response data", response.data);
+    
+                        if (response.data.sentences.length) {
+                            newWorld = {
+                                name: enWord,
+                                mean: response.data.sentences[0].fields.vi
+                            }
+                            setArr([...arr, newVoca,newWorld])
+                            console.log("newVoca", newVoca)
+    
+                        }
+                        else {
+                            setError("Từ vựng không hợp lệ")
+                        }
+    
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+
+                setArr([...arr, value, newVoca])
                 setScore(score + 1)
             })
             .catch(function (error) {
@@ -46,57 +75,44 @@ const Game = props => {
             });
     }
 
-    const check = async (value) => {
-        console.log("call check api")
-        var options = {
-            method: 'GET',
-            url: "https://api.tracau.vn/WBBcwnwQpV89/s/" + value + "%7D/en",
-        };
-
-        axios.request(options)
-            .then(function (response) {
-                console.log("response data", response.data);
-                {
-                    response.data.sentences.length !== 5 ? setError("good Job !") : setError("Từ vựng không hợp lệ")
-                }
-            })
-            .catch(function (error) {
-                console.error(error);
-            });
-
-    }
-
     const submit = async () => {
         const lastC = value.slice(value.length - 1, value.length)
         const beginC = value.slice(0, 1)
-        const lastVoca = arr[arr.length - 1]
+        const lastVoca = arr[arr.length - 1].name
         const lastCofVoca = lastVoca.slice(lastVoca.length - 1, lastVoca.length)
-
+        let newVoca = {}
+        console.log("lastCofVoca", lastCofVoca)
         if (
             lastCofVoca.toLowerCase() !== beginC.toLowerCase()
         ) {
             setError("Sai luật rùi á bạn gì đóa ơi !")
-            return
+            // return
         }
         else {
-            const url = "https://api.datamuse.com/words?ml=duck&sp=" + lastC + "*&max=1"
+            const url = "https://api.datamuse.com/words?ml=duck&sp=" + lastC + "*&max=10"
             console.log("call check api")
             var options = {
                 method: 'GET',
-                url: "https://api.tracau.vn/WBBcwnwQpV89/s/" + value + "%7D/en",
+                url: "https://api.tracau.vn/WBBcwnwQpV89/s/" + value.toLowerCase() + "/en",
             };
 
             await axios.request(options)
                 .then(function (response) {
                     console.log("response data", response.data);
-                    const newVoca = {
-                        name: 
-                    }
-                    setArr([...arr, value])
 
-                    {
-                        response.data.sentences.length ? setError("good Job !") : setError("Từ vựng không hợp lệ")
+                    if (response.data.sentences.length) {
+                        newVoca = {
+                            name: value,
+                            mean: response.data.sentences[0].fields.vi
+                        }
+                        setArr([...arr, newVoca])
+                        console.log("newVoca", newVoca)
+
                     }
+                    else {
+                        setError("Từ vựng không hợp lệ")
+                    }
+
                 })
                 .catch(function (error) {
                     console.error(error);
@@ -108,7 +124,7 @@ const Game = props => {
 
             else {
                 setTimeout(function () {
-                    callApi(url, value)
+                    callApi(url, newVoca)
                 }, 1000)
             }
         }
@@ -116,14 +132,16 @@ const Game = props => {
 
     }
     const gg = () => {
-        setArr(["Start"])
+        setArr([{ name: "WitchWorld", mean: "Thế giới phù thủy" }])
+        
+        setScore(0)
     }
     return (
         <View style={styles.container}>
 
-            {/* <TouchableOpacity style={styles.boxSubmit} onPress={() => submit()} >
+            <TouchableOpacity style={styles.boxSubmit} onPress={() => submit()} >
                 <Text style={styles.boxText}>Submit</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
             <TouchableOpacity style={styles.boxGG} onPress={() => gg()} >
                 <Text style={styles.boxText}>Đầu hàng</Text>
@@ -145,9 +163,9 @@ const Game = props => {
             </TouchableOpacity>
             <View>
                 {
-                    arr.map(item =>
-                        <TouchableOpacity style={styles.box}>
-                            <Text style={styles.boxText}>{item.name}</Text>
+                    arr.map((item, index ) =>
+                        <TouchableOpacity style={styles.box} onPress={()=> setTranslate(index)}>
+                           <Text style={styles.boxText}>{ translate !== index ? item.name : item.mean}</Text>
                         </TouchableOpacity>
                     )
                 }
