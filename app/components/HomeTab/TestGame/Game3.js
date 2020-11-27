@@ -128,7 +128,7 @@ const Game3 = props => {
             </TouchableOpacity>
             <Text style={styles.questionText}>{error} </Text>
              <TouchableOpacity style={[styles.questionView, {backgroundColor:"#fff"}]}  onPress={()=> setCanlisten(false)}>
-                <Text style={styles.questionText}>{ !canListen ? questionList[question].Means : "I can't listen"}</Text>
+                <Text style={styles.questionText}>{ !canListen ? questionList[question].Name : "I can't listen"}</Text>
             </TouchableOpacity>
             {renderAns()}
             <View style={styles.AnswerView}></View>

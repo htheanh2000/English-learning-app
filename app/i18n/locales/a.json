@@ -1,0 +1,136 @@
+{
+    "Content" : "Ở bài học này, chúng ta sẽ tìm hiểu về các loại nghề nghiệp nhé !",
+    "ImgUrl" : "Occupations.jpg",
+    "Name" : "Occupations",
+    "Vocabulary" : [ null, {
+      "Example" : {
+        "Ex1" : {
+          "EN" : "Today i will meet doctor",
+          "VN" : "Hôm nay tớ sẽ đi gặp bác sĩ"
+        }
+      },
+      "ImgUrl" : "Doctor.jpg",
+      "Level" : "Easy",
+      "Means" : "Bác sĩ",
+      "Name" : "Doctor",
+      "Pronounce" : "/ˈdɒktər/",
+      "Type" : "Noun"
+    }, {
+      "Example" : {
+        "Ex1" : {
+          "EN" : "My sister is a Dentist",
+          "VN" : "Chị tớ là một nha sĩ"
+        }
+      },
+      "ImgUrl" : "Dentist.jpg",
+      "Level" : "Easy",
+      "Means" : "Nha sĩ",
+      "Name" : "Dentist",
+      "Pronounce" : "/ˈdentɪst/",
+      "Type" : "Noun"
+    }, {
+      "Example" : {
+        "Ex1" : {
+          "EN" : "Builders are building a school",
+          "VN" : "Những công nhân đang xây một trường học"
+        }
+      },
+      "ImgUrl" : "Builder.jpg",
+      "Level" : "Easy",
+      "Means" : "Thợ xây",
+      "Name" : "Builder",
+      "Pronounce" : "/ˈbɪldər/",
+      "Type" : "Noun"
+    }, {
+      "Example" : {
+        "Ex1" : {
+          "EN" : "I don't cook meat very often.",
+          "VN" : "Tớ không thường nấu món thịt lắm"
+        }
+      },
+      "ImgUrl" : "Cook.jpg",
+      "Level" : "Easy",
+      "Means" : "Đầu bếp",
+      "Name" : "Cook",
+      "Pronounce" : "/kʊk/",
+      "Type" : "Noun"
+    }, {
+      "Example" : {
+        "Ex1" : {
+          "EN" : "My teacher is teaching me",
+          "VN" : "Giáo viên của tớ đang hướng dẫn tớ"
+        }
+      },
+      "ImgUrl" : "Teacher.jpg",
+      "Level" : "Easy",
+      "Means" : "Giáo viên",
+      "Name" : "Teacher",
+      "Pronounce" : "/ˈti·tʃər/",
+      "Type" : "Noun"
+    }, {
+      "Example" : {
+        "Ex1" : {
+          "EN" : "Chipu is a famous singger",
+          "VN" : "Chipu là một ca sĩ nổi tiếng"
+        }
+      },
+      "ImgUrl" : "Singer.jpg",
+      "Level" : "Easy",
+      "Means" : "Ca sĩ",
+      "Name" : "Singer",
+      "Pronounce" : "/ˈsɪŋər/",
+      "Type" : "Noun"
+    }, {
+      "Example" : {
+        "Ex1" : {
+          "EN" : "My dream is beacome a actor",
+          "VN" : "Tớ ước mơ trở thành một diễn viên"
+        }
+      },
+      "ImgUrl" : "Actor.jpg",
+      "Level" : "Easy",
+      "Means" : "Diễn viên",
+      "Name" : "Actor",
+      "Pronounce" : "/ˈæktər/ ",
+      "Type" : "Noun"
+    }, {
+      "Example" : {
+        "Ex1" : {
+          "EN" : "She works as secretary",
+          "VN" : "Cô ấy là một thư kí"
+        }
+      },
+      "ImgUrl" : "Secretary.jpg",
+      "Level" : "Easy",
+      "Means" : "Thư kí",
+      "Name" : "Secretary",
+      "Pronounce" : "/ˈsekrətəri/ ",
+      "Type" : "Noun"
+    }, {
+      "Example" : {
+        "Ex1" : {
+          "EN" : "There'll be a magician at the kids' Christmas party.",
+          "VN" : "Sẽ có một ảo thuật gia tại buổi tiệc giáng sinh"
+        }
+      },
+      "ImgUrl" : "Magician.jpg",
+      "Level" : "Easy",
+      "Means" : "Ảo thuật gia",
+      "Name" : "Magician",
+      "Pronounce" : "/məˈdʒɪʃən/",
+      "Type" : "Noun"
+    }, {
+      "Example" : {
+        "Ex1" : {
+          "EN" : "My sister is a artist",
+          "VN" : "Chị tớ là một họa sĩ"
+        }
+      },
+      "ImgUrl" : "Artist.jpg",
+      "Level" : "Easy",
+      "Means" : "Họa sĩ",
+      "Name" : "Artist",
+      "Pronounce" : "/ˈɑːtɪst/",
+      "Type" : "Noun"
+    } ]
+  }

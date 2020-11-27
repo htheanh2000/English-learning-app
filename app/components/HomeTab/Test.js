@@ -128,12 +128,13 @@ const Test = props => {
   }
   const setNextQuestion = async (ans) => {
     randomGameType()
+  
+    checkAns(ans)
+    setQuestion(question + 1)
     if (question === 9) {
       submit()
       return
     }
-    checkAns(ans)
-    setQuestion(question + 1)
   }
 
 

@@ -1,0 +1,105 @@
+{
+    "Contents" : [ {
+      "en" : "One day a countryman going to the nest of his Goose found there an egg all yellow and glittering.",
+      "vn" : "Một ngày nọ, một người nông dân tìm đến ổ của con ngỗng và thấy một quả trứng vàng sáng bóng"
+    }, {
+      "en" : "When he took it up it was as heavy as lead and he was going to throw it away",
+      "vn" : "Ông cầm quả trứng lên xem thì thấy nó nặng như chì và quẳng nó đi"
+    }, {
+      "en" : "Because he thought a trick had been played uponhim",
+      "vn" : "Vì ông nghĩ đây là một trò đùa dành cho mình."
+    }, {
+      "en" : "But he took it home on second thoughts, and soon found to his delight that it was an egg of pure gold.",
+      "vn" : "Nhưng nghĩ lại ông bèn mang nó về nhà và vui sướng khi nhận ra rằng đây là quả trứng bằng vàng nguyên chất"
+    }, {
+      "en" : "Every morning the same thing occurred, and he soon becam rich by selling his eggs.As he grew rich he grew greedy",
+      "vn" : "Mỗi sáng điều tương tự này đều xảy ra và ông ta sớm trở nên giàu có bằng việc bán những quả trứng vàng."
+    }, {
+      "en" : "As he grew rich he grew greedy; and thinking to get at once all the gold the Goose could give, ",
+      "vn" : "Khi càng giàu có thì lòng tham cũng lớn dần lên, ông nghĩ cách để có tất cả trứng vàng của con ngỗng trong một lần, "
+    }, {
+      "en" : "He killed it and opened it only to find, nothing",
+      "vn" : "Ông giết con ngỗng, mổ bụng nó để tìm trứng vàng nhưng không có gì trong đó cả."
+    }, {
+      "en" : "\"Greed often overreaches itself.\"",
+      "vn" : "\"Tham quá thì thâm\""
+    } ],
+    "Name" : {
+        "en" : "The Goose with the Golden Egg",
+        "vn" : "Con ngỗng và quả trứng vàng"
+    },
+    "Question" : [ null, {
+      "Answer" : {
+        "1" : {
+          "en" : "Goose",
+          "vn" : "Con ngỗng"
+        },
+        "2" : {
+          "en" : "Monkey",
+          "vn" : "Con khỉ"
+        },
+        "3" : {
+          "en" : "Chicken",
+          "vn" : "Con gà"
+        },
+        "4" : {
+          "en" : "Bird",
+          "vn" : "Con chim"
+        },
+        "correct" : 1
+      },
+      "Name" : {
+        "en" : "Which animal is mentioned in the story?",
+        "vn" : "Con vật nào được nhắc đến trong truyện ?"
+      }
+    }, {
+      "Answer" : {
+        "1" : {
+          "en" : "Copper",
+          "vn" : "Dồng"
+        },
+        "2" : {
+          "en" : "Silver",
+          "vn" : "Bạc"
+        },
+        "3" : {
+          "en" : "Gold",
+          "vn" : "Vàng"
+        },
+        "4" : {
+          "en" : "Diamond",
+          "vn" : "Kim cương"
+        },
+        "correct" : 3
+      },
+      "Name" : {
+        "en" : "What is the egg made of ?",
+        "vn" : "Quả trứng được làm từ gì ?"
+      }
+    }, {
+      "Answer" : {
+        "1" : {
+          "en" : "Because the goose don't give him gold eggs",
+          "vn" : "Vì con ngỗng không cho ông ta những quả trứng vàng"
+        },
+        "2" : {
+          "en" : "Because he think the goose is a thief",
+          "vn" : "Người chủ nghĩ rằng con ngỗng là kẻ trộm"
+        },
+        "3" : {
+          "en" : "Goose's egg is made of stone",
+          "vn" : "Trứng của con ngỗng được làm từ đá"
+        },
+        "4" : {
+          "en" : "His wife doesn't like the goose",
+          "vn" : "Vợ anh ta không thích ngỗng"
+        },
+        "correct" : 1
+      },
+      "Name" : {
+        "en" : "Why he kill the goose ?",
+        "vn" : "Tại sao ông ta lại giết con ngỗng"
+      }
+    } ],
+    "Url" : "GooseAndTheEgg.jpg"
+  }

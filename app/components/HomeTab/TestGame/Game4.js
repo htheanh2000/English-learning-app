@@ -187,9 +187,11 @@ const styles = StyleSheet.create({
         alignContent: "center"
     },
     boxView: {
+        width:screenWidth*.8,
         flexDirection: "row",
         justifyContent: "center",
-        alignContent: "center"
+        alignContent: "center",
+        flexWrap:"wrap"
     },
     boxText: {
         textAlign: "center",

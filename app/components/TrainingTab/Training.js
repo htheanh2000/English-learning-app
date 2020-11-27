@@ -1,74 +1,77 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Appbar, Searchbar } from 'react-native-paper';
 import { FlatList, Image, ScrollView, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View, Dimensions } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import database from '@react-native-firebase/database';
+import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
+
 const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
-
-const DATA = [
-    {
-        id: 1,
-        url: require('../../assets/Story/Story.jpg'),
-        title: "Story",
-    },
-    {
-        id: 2,
-        url: require('../../assets/Story/Story.jpg'),
-        title: "Story",
-    },
-    {
-        id: 3,
-        url: require('../../assets/Story/Story.jpg'),
-        title: "Story",
-    },
-    {
-        id: 4,
-        url: require('../../assets/Story/Story.jpg'),
-        title: "Story",
-    },
-];
-
-const leftData = DATA.slice(0, DATA.length / 2)
-const rightData = DATA.slice(DATA.length / 2)
-
 
 const Training = () => {
     const [selectedId, setSelectedId] = useState(null);
     const navigation = useNavigation();
-    const Item = ({ item, onPress, style }) => (
-        <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-            <Image style={styles.image} source={item.url} />
-            <Text style={styles.text}>{item.title}</Text>
+    const [leftData, setLeftData] = useState([])
+    const [rightData, setRightData] = useState([])
+    const [arrImg, setArrImg] = useState([])
+    useEffect(() => {
+        database()
+            .ref('stories')
+            .once('value')
+            .then(snapshot => {
+                const stories = snapshot.val()
+                // setStory(stories)
+                console.log("story", stories)
+                setLeftData(stories)
+                setRightData(stories.slice(stories.length / 2))
+                getImg(stories)
+            });
+
+    }, [])
+
+    const getImg = async (stories) => {
+        const arr = []
+        await Promise.all(stories.map(async (item) => {
+            console.log("arr",item.Url )
+            const url = await storage()
+                .ref("/Stories/" + item.Url)
+                .getDownloadURL()
+                arr.push(url)
+        }))
+        setArrImg(arr)
+        
+    }
+
+    const Item = ({ item, index }) => (
+        <TouchableOpacity onPress={()=> onPressItem(item)} style={[styles.item]}>
+            {
+                arrImg ?  <Image style={styles.image} source={{uri:arrImg[index]}} /> : null
+            }
+            <Text style={styles.text}>{item.Name.vn}</Text>
         </TouchableOpacity>
     );
 
-    function onPressItem() {
-        navigation.navigate("Story")
+    // const ItemRight = ({ item, index }) => (
+    //     <TouchableOpacity onPress={()=> onPressItem(item)} style={[styles.item]}>
+    //         {
+    //             arrImg ?  <Image style={styles.image} source={{uri:arrImg[1]}} /> : null
+    //         }
+    //         <Text style={styles.text}>{item.Name.vn}</Text>
+    //     </TouchableOpacity>
+    // );
+
+    function onPressItem(item) {
+        navigation.navigate("Story", {
+            story: item
+        })
     }
 
-    const renderItem = ({ item }) => {
-        return (
-            <Item
-                item={item}
-                onPress={() => onPressItem((item.id))}
-                style={{ backgroundColor: "transparent" }}
-            />
-        );
-    };
 
     function _goBack() {
-        db.collections.get('blogs').prepareCreate(blog => {
-            blog.name = "blogNames[i] || blog.id"
-          })
+        navigation.navigate("Home")
     }
 
-    const _handleSearch = () => {
-        <Searchbar
-            placeholder="Search"
-        //   onChangeText={onChangeSearch}
-        //   value={searchQuery}
-        />
-    }
 
 
     const _handleMore = () => console.log('Shown more');
@@ -85,38 +88,34 @@ const Training = () => {
                 <Searchbar
                     theme={{
                         colors: {
-                                   placeholder: '#000', text: '#000', primary: '#000',
-                                   underlineColor: 'transparent', background: '#003489'
-                           },
-                           fonts :{
-                             fontSize:2,
-                           }
-                     }}
+                            placeholder: '#000', text: '#000', primary: '#000',
+                            underlineColor: 'transparent', background: '#003489'
+                        },
+                        fonts: {
+                            fontSize: 2,
+                        }
+                    }}
                     style={styles.search}
                     placeholder="Search"
                 />
             </View>
-          
+      
 
             <SafeAreaView >
                 <ScrollView >
                     <View style={styles.gallery}>
-                        <FlatList style={[styles.flat]}
-                            data={leftData}
-                            key={'#'}
-                            renderItem={renderItem}
-                            keyExtractor={(item) => item.id}
-                            extraData={selectedId}
-                            numColumns={1}
-                        />
-                        <FlatList style={[styles.flat, styles.right]}
-                            data={rightData}
-                            key={'#'}
-                            renderItem={renderItem}
-                            keyExtractor={(item) => item.id}
-                            extraData={selectedId}
-                            numColumns={1}
-                        />
+                        {
+                            leftData ?
+                            leftData.map((item, index) =><Item item={item} index={index}></Item>)
+                                : null
+                        }
+
+                        {/* {
+                            rightData ?
+                            rightData.map((item, index) =><ItemRight item={item} index={index}></ItemRight>)
+                                : null
+                        } */}
+
                     </View>
 
                 </ScrollView>
@@ -135,7 +134,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: widthR,
         flexDirection: "row",
-        marginBottom:widthR / 6 + 50
+        marginBottom: widthR / 6 + 50,
+        flexWrap: "wrap"
     },
     item: {
         borderBottomWidth: 1,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         width: "100%",
         bottom: 10,
-        color: "#fff"
+        color: "#000"
     },
     flat: {
         width: widthR / 3
@@ -173,13 +173,13 @@ const styles = StyleSheet.create({
         marginTop: widthR / 6 + 10
     },
     search: {
-        width: widthR-40,
+        width: widthR - 40,
         borderRadius: 10,
         backgroundColor: "#edf4ff",
         shadowColor: "#eee",
         // height:40,
-        margin:10,
-        marginLeft:20,
+        margin: 10,
+        marginLeft: 20,
         elevation: 0,
         fontSize: 2
     }

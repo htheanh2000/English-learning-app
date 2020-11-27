@@ -11,22 +11,17 @@ import { Button } from 'react-native-paper'
 const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
 
-const Story = () => {
+const Story = (props) => {
     const [selectedId, setSelectedId] = useState(null);
     const [tym, setTym] = useState(false)
-    const [story, setStory] = useState(null)
+    // const [story, setStory] = useState(null)
     const [temp, setTemp] = useState([])
     const [transTitle, setTransTitle] = useState(false)
     const [imgUrl, setImgUrl] = useState()
+    const {story} = props.route.params
     useEffect(() => {
+        console.log("story", story)
         setTemp([])
-        database()
-            .ref('stories/1')
-            .once('value')
-            .then(snapshot => {
-                const stories = snapshot.val()
-                setStory(stories)
-            });
             getImg()
 
     }, [])
@@ -34,7 +29,7 @@ const Story = () => {
     const navigation = useNavigation();
     const getImg =async()=> {
         const url = await storage()
-        .ref("/Stories/Quarrel.jpg" )
+        .ref("/Stories/" + story.Url )
         .getDownloadURL()
       console.log("url", url)
     setImgUrl(url)
@@ -110,7 +105,7 @@ const Story = () => {
                         </ScrollView>
                     </SafeAreaView> : null
             }
-                    <Button style={{backgroundColor: "#d3d2f7", marginTop:20}} onPress={()=> navigation.navigate("StoryTest",{
+                    <Button style={styles.doneBtn} onPress={()=> navigation.navigate("StoryTest",{
                        story : story
                     })}>Tớ đọc xong rồi !</Button>
             
@@ -126,17 +121,17 @@ const styles = StyleSheet.create({
     gallery: {
         marginTop: 0,
         overflow: "scroll",
-        height: 270,
-
-        // backgroundColor:"#222"
+        height: 350,
+        flexWrap:"wrap"
     },
     item: {
-        width: widthR * .8,
+        width: widthR * .6,
         marginLeft: widthR * .1,
         marginTop: 0,
-        overflow: "hidden",
+        // overflow: "hidden",
         justifyContent: "center",
         flexDirection: "row",
+        flexWrap:"wrap"
     },
     title: {
         fontSize: 32,
@@ -221,8 +216,14 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "white",
     },
-    testBtn: {
+    doneBtn:{
+        backgroundColor: "#d3d2f7",
+         marginTop:20,
+         position:"absolute",
+         bottom:0,
+         width: widthR,
+        //  marginLeft: widthR/2 - 100
     }
 });
 
-export default Story;
+export default Story;   
