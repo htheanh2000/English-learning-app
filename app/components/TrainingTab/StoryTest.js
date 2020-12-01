@@ -146,6 +146,10 @@ const StoryTest = props=> {
             database()
                 .ref('users/' + userId + '/story/' + indexStory + "/isReaded")
                 .set(true)
+            
+           database()
+                .ref('users/' + userId + '/DailyMission/missionList/2' )
+                .set(1)
 
           }
         }

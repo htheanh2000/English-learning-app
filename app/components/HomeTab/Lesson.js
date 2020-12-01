@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import storage from '@react-native-firebase/storage';
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -37,6 +39,18 @@ const Lesson = props => {
     setUrl(url)
   }
   getImg()
+  const goHome = () => {
+    console.log("goHone")
+    if (auth().currentUser) {
+      const userId = auth().currentUser.uid;
+      if (userId) {
+        database()
+          .ref('users/' + userId + '/DailyMission/missionList/0' )
+          .set(1)
+      }
+    }
+    navigation.navigate("Home")
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -92,7 +106,7 @@ const Lesson = props => {
               { question !==  map.Vocabulary.length-1 ? <TouchableOpacity style={styles.btn} onPress={()=> setNextQuestion()}>
                 <Text style={styles.exText} >Next</Text>
               </TouchableOpacity> : 
-              <TouchableOpacity style={styles.btn} onPress={()=> navigation.navigate("Home")}>
+              <TouchableOpacity style={styles.btn} onPress={()=> goHome()}>
                 <Text style={styles.exText} >Submit</Text>
               </TouchableOpacity>}
           </View>

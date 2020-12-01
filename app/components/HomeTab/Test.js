@@ -188,6 +188,9 @@ const Test = props => {
           gold: newGold,
         })
 
+        database()
+          .ref('users/' + userId + '/DailyMission/missionList/1' )
+          .set(1)
       }
     }
     dispatch(updateGold(newGold))
