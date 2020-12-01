@@ -1,79 +1,98 @@
 import React, { useEffect, useState } from "react";
 import { Appbar, Searchbar } from 'react-native-paper';
 import { FlatList, Image, ScrollView, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View, Dimensions } from "react-native";
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import database from '@react-native-firebase/database';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
-
+import { useSelector } from 'react-redux'
 const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
 
 const Training = () => {
-    const [selectedId, setSelectedId] = useState(null);
     const navigation = useNavigation();
-    const [leftData, setLeftData] = useState([])
-    const [rightData, setRightData] = useState([])
+    const [storyData, setStoryData] = useState([])
     const [arrImg, setArrImg] = useState([])
+    const [storyTym, setStoryTym] = useState([])
     useEffect(() => {
         database()
             .ref('stories')
             .once('value')
             .then(snapshot => {
                 const stories = snapshot.val()
-                // setStory(stories)
-                console.log("story", stories)
-                setLeftData(stories)
-                setRightData(stories.slice(stories.length / 2))
+                setStoryData(stories)
+                console.log("storyData", stories)
                 getImg(stories)
             });
-
     }, [])
+    useEffect(() => {
+        database()
+            .ref('stories')
+            .on('value', snapshot => {
+                console.log('update stories data: ', snapshot.val());
+                setStoryData(snapshot.val())
+            });
+    },[])
 
+ 
+
+    useEffect(() => {
+        if (auth().currentUser) {
+            const userId = auth().currentUser.uid;
+            if (userId) {
+                database()
+                    .ref('users/' + userId + '/story/')
+                    .on('value' , snapshot => {
+                        const storiesTym = snapshot.val()
+                        console.log("update story user", snapshot.val())
+                        if (storiesTym) {
+                            setStoryTym(storiesTym)
+                        }
+                    });
+            }
+        }
+    }, [])
     const getImg = async (stories) => {
         const arr = []
         await Promise.all(stories.map(async (item) => {
-            console.log("arr",item.Url )
+            console.log("arr", item.Url)
             const url = await storage()
                 .ref("/Stories/" + item.Url)
                 .getDownloadURL()
-                arr.push(url)
+            arr.push(url)
         }))
         setArrImg(arr)
-        
     }
+    useEffect(() => {
+
+    }, [])
 
     const Item = ({ item, index }) => (
-        <TouchableOpacity onPress={()=> onPressItem(item)} style={[styles.item]}>
+        <TouchableOpacity onPress={() => onPressItem(item, index)} style={[styles.item]}>
             {
-                arrImg ?  <Image style={styles.image} source={{uri:arrImg[index]}} /> : null
+                arrImg ? <Image style={styles.image} source={{ uri: arrImg[index] }} /> : null
             }
             <Text style={styles.text}>{item.Name.vn}</Text>
+
+            <View style={styles.viewView}>
+                <Text style={{ textAlign: "center", paddingRight: 5 }} >{item.View ? item.View : 0}</Text>
+                <AntDesign name={storyTym && storyTym[index] &&  storyTym[index].tym? "heart" : "hearto"} color="tomato" size={15} />
+
+            </View>
         </TouchableOpacity>
     );
 
-    // const ItemRight = ({ item, index }) => (
-    //     <TouchableOpacity onPress={()=> onPressItem(item)} style={[styles.item]}>
-    //         {
-    //             arrImg ?  <Image style={styles.image} source={{uri:arrImg[1]}} /> : null
-    //         }
-    //         <Text style={styles.text}>{item.Name.vn}</Text>
-    //     </TouchableOpacity>
-    // );
-
-    function onPressItem(item) {
+    function onPressItem(item, index) {
         navigation.navigate("Story", {
-            story: item
+            story: item,
+            index: index,
+            UserTym: storyTym[index] && storyTym[index].tym || false
         })
     }
-
-
     function _goBack() {
         navigation.navigate("Home")
     }
-
-
-
     const _handleMore = () => console.log('Shown more');
 
     return (
@@ -81,7 +100,6 @@ const Training = () => {
             <Appbar.Header style={{ backgroundColor: 'transparent', zIndex: 999 }}>
                 <Appbar.BackAction onPress={_goBack} />
                 <Appbar.Content title="Theme" />
-                {/* <Appbar.Action icon="magnify" onPress={_handleSearch} /> */}
                 <Appbar.Action icon="dots-vertical" onPress={_handleMore} />
             </Appbar.Header>
             <View >
@@ -99,22 +117,16 @@ const Training = () => {
                     placeholder="Search"
                 />
             </View>
-      
+
 
             <SafeAreaView >
                 <ScrollView >
                     <View style={styles.gallery}>
                         {
-                            leftData ?
-                            leftData.map((item, index) =><Item item={item} index={index}></Item>)
+                            storyData ?
+                                storyData.map((item, index) => <Item item={item} index={index}></Item>)
                                 : null
                         }
-
-                        {/* {
-                            rightData ?
-                            rightData.map((item, index) =><ItemRight item={item} index={index}></ItemRight>)
-                                : null
-                        } */}
 
                     </View>
 
@@ -127,8 +139,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#fff",
-        // backgroundColor: "red",
-        // marginTop: StatusBar.currentHeight || 0,
     },
     gallery: {
         marginTop: 10,
@@ -146,8 +156,6 @@ const styles = StyleSheet.create({
         marginTop: 0,
         overflow: "hidden",
         borderRadius: 20
-        // marginVertical: 8,
-        // marginHorizontal: 16,
     },
     title: {
         fontSize: 32,
@@ -165,6 +173,18 @@ const styles = StyleSheet.create({
         width: "100%",
         bottom: 10,
         color: "#000"
+    },
+    viewView: {
+        position: "absolute",
+        right: 20,
+        top: 10,
+        minWidth: 40,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 5,
+        borderRadius: 4,
+        backgroundColor: "#b9c9c1",
+        flexDirection: "row"
     },
     flat: {
         width: widthR / 3

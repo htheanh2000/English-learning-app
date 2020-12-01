@@ -7,5 +7,6 @@ export default {
     "Shop" : "Cửa hàng",
     "Mission" : "Nhiệm vụ",
     "Level" : "Cấp",
-    "Language": "Ngôn ngữ"
+    "Language": "Ngôn ngữ",
+    "Daily mission" : "Nhiệm vụ hằng ngày"
   };

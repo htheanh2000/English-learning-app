@@ -9,13 +9,12 @@ import storage from '@react-native-firebase/storage';
 import { useDispatch, useSelector } from 'react-redux'
 import admob ,{MaxAdContentRating, InterstitialAd, RewardedAd, RewardedAdEventType, TestIds, AdEventType } from '@react-native-firebase/admob';
 import { updateGold } from '../../store/user';
-import Admod from '../../Ads/admod'
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 const StoryTest = props=> {
     const user = useSelector(state => state.user)
-    const {story} = props.route.params
+    const {story, indexStory} = props.route.params
     const [index, setIndex] = useState(1)
     const dispatch = useDispatch()
     const navigation = useNavigation()
@@ -143,7 +142,11 @@ const StoryTest = props=> {
             .update({
               gold: newGold,
             })
-    
+            
+            database()
+                .ref('users/' + userId + '/story/' + indexStory + "/isReaded")
+                .set(true)
+
           }
         }
         

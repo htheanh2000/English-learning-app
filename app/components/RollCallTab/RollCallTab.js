@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useEffect, useState } from 'react'
+import React, {  useEffect, useState } from 'react'
 import {
     StyleSheet,
     View,
@@ -7,27 +7,64 @@ import {
     Image,
     TouchableOpacity
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
-import AsyncStorage from '@react-native-community/async-storage';
 import { useSelector, useDispatch } from 'react-redux'
 import database from '@react-native-firebase/database';
-import { Button } from 'react-native-paper';
-import { Calendar, CalendarList, Agenda } from 'react-native-calendars'
+import { Calendar } from 'react-native-calendars'
+import { rollCall } from '../../store/user'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import DailyMission from './DailyMission'
+import I18n from '../../i18n/i18n'
 const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
-import { rollCall } from '../../store/user'
-import Data from '../../Data/characters'
+const Tab = createMaterialTopTabNavigator();
+
+
+function SecondRoute() {
+    return (
+        <View style={styles.scene}>
+            <Text >Welcome back ! </Text>
+        </View>
+    )
+}
+
+
+function MyTabs() {
+    return (
+        
+      <Tab.Navigator>
+        <Tab.Screen name={I18n.t("Daily mission")} component={DailyMission} />
+        <Tab.Screen name="Settings" component={SecondRoute} />
+      </Tab.Navigator>
+    );
+  }
+
 function RollCallTab() {
     const dispatch = useDispatch()
     const user = useSelector(state => state.user)
     const [isRollCalled, setRollCall] = useState(true)
     const month = new Date().getMonth() + 1
     const [dateList, setDateList] = useState(null)
-    const current = new Date().getFullYear() + '-' + month + '-' + new Date().getDate()
-    let  obj = null
-
+    let current = ""
+    let obj = null
+ 
+    const initialLayout = { width: Dimensions.get('window').width };
+    
     useEffect(() => {
+        let year = new Date().getFullYear()
+        let month = new Date().getMonth() + 1
+        let date = new Date().getDate()
+        if (new Date().getMonth() + 1 < 10) {
+            month = "0" + month
+        }
+
+        if (new Date().getDate() < 10) {
+            date = "0" + date
+        }
+
+        current = year + '-' + month + '-' + date
+        console.log("current", current)
+
         if (user.rollCalls && user.rollCalls[user.rollCalls.length - 1] === current) {
             setRollCall(false)
         }
@@ -52,20 +89,21 @@ function RollCallTab() {
         }
         setRollCall(false)
     }
-    obj =  user.rollCalls ? user.rollCalls.reduce((c, v) => Object.assign(c, {[v]: {selected: true,marked: true}}), {}) : null
+    obj = user.rollCalls ? user.rollCalls.reduce((c, v) => Object.assign(c, { [v]: { selected: true, marked: true } }), {}) : null
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Welcome back ! {user.username}</Text>
             {
                 isRollCalled ? <TouchableOpacity style={styles.rollcall} onPress={() => rollCallf()}>
                     <Image style={{ width: 200, height: 200 }} source={require('../../assets/rollcall.jpg')}></Image>
-                </TouchableOpacity> : null  
+                </TouchableOpacity> : null
             }
             {
                 obj ? <Calendar
                     markedDates={obj}
-                /> : <Calendar/>
+                /> : <Calendar />
             }
+           {MyTabs()}
         </View>
     )
 }
@@ -75,7 +113,7 @@ export default RollCallTab
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff"
+        backgroundColor: "#eee"
     },
     title: {
         backgroundColor: "#000",
@@ -91,7 +129,11 @@ const styles = StyleSheet.create({
         position: "absolute",
         left: widthR / 2 - 100,
         top: heightR / 2 - 0,
-    }
+    },
+    scene: {
+        flex:1,
+        // backgroundColor:"red"
+    },
 });
 
 

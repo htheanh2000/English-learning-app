@@ -27,7 +27,7 @@ const slice = createSlice({
     },
     status: (state, action) => {
       console.log("set status", state);
-      const { rank, username, online, level, exp, map, gold, characters, currentCharacter, rollCalls, language } = action.payload
+      const { rank, username, online, level, exp, map, gold, characters, currentCharacter, rollCalls, language, story } = action.payload
       state.rank = rank,
         state.username = username,
         state.online = online,
@@ -35,7 +35,8 @@ const slice = createSlice({
         state.exp = exp,
         state.map = map,
         state.gold = gold,
-        state.characters = characters
+        state.characters = characters,
+        state.story = story
       state.currentCharacter = currentCharacter
       state.rollCalls = rollCalls
       state.language = language
@@ -114,7 +115,10 @@ const slice = createSlice({
       if (state.level < level) {
         state.level = level
       }
-    }
+    },
+    // updateStoryTymReducer : (state, action) => {
+    //   console.log("update story Tym", action.payload);
+    // }
   },
 });
 

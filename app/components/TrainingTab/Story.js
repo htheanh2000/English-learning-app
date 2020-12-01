@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
+import auth from '@react-native-firebase/auth';
 import { Button } from 'react-native-paper'
 
 const widthR = Dimensions.get("screen").width;
@@ -18,25 +19,42 @@ const Story = (props) => {
     const [temp, setTemp] = useState([])
     const [transTitle, setTransTitle] = useState(false)
     const [imgUrl, setImgUrl] = useState()
-    const {story} = props.route.params
+    const {story, index, UserTym , updateTym} = props.route.params
+    const [countView, setCountView] = useState()
     useEffect(() => {
-        console.log("story", story)
+        console.log("updateTym", updateTym)
         setTemp([])
             getImg()
-
     }, [])
+    
+    useEffect(()=> {
+        setTym(UserTym)
+    },[])
+
+
+   useEffect(() => {
+        const curView =  database()
+        .ref('stories/' + index + "/View")
+        .once('value')
+        .then(snapshot => {
+            if(snapshot.val()) {
+                setCountView(snapshot.val())
+            }
+            else {
+                setCountView(0)
+            }
+            console.log("snapshot.val()", snapshot.val())
+        });
+      },[countView]);
 
     const navigation = useNavigation();
     const getImg =async()=> {
         const url = await storage()
         .ref("/Stories/" + story.Url )
         .getDownloadURL()
-      console.log("url", url)
     setImgUrl(url)
     }
     const trans=(index)=> {
-        console.log("index", index)
-        console.log("temp", temp)
         const t = temp
         if( t[index] === 1) {
             t[index] = 0
@@ -49,13 +67,25 @@ const Story = (props) => {
     const speak =(content)=> {
         console.log("content", content)
     }
+    const onPressTym =()=> {
+        if (auth().currentUser) {
+            const userId = auth().currentUser.uid;
+            if (userId) {
+                database()
+                    .ref('users/' + userId + '/story/' + index + "/tym")
+                    .set(!tym)
+            }
+        }
+        setTym(!tym)
+
+    }
     const Item = (props) => (
         <TouchableOpacity style={[styles.item]} onPress={()=> trans(props.index)}>
             <View style={styles.itemView}>
                 <Text style={[styles.itemTitle, {color:temp[props.index] === 1 ? "green" :"#000" }]}>{ temp[props.index] !== 1 ? props.item.en : props.item.vn}</Text>
             </View>
             <TouchableOpacity style={styles.miniHeartIcon} onPress={()=> speak(props.item.en)} >
-                {/* <Image style={styles.image} source={require("../../assets/volume.jpg")} /> */}
+                <Image style={styles.image} source={require("../../assets/volume.jpg")} />
             </TouchableOpacity>
         </TouchableOpacity>
 
@@ -64,7 +94,17 @@ const Story = (props) => {
     const _goBack = () => {
         navigation.pop()
     }
+    const submit =()=> {
+        setCountView(countView + 1)
+        database()
+            .ref('stories/' + index + "/View")
+            .set(countView + 1)
 
+        navigation.navigate("StoryTest",{
+            story : story,
+            indexStory: index
+         })
+    }
     const _handleMore = () => console.log('Shown more');
     const handleSettym = () => {
         // if(tym) {
@@ -93,8 +133,14 @@ const Story = (props) => {
                 {
                     story && story.Name ? <Text style={styles.backgroundText} onPress={()=> setTransTitle(!transTitle)}>{ !transTitle ?  story.Name.en : story.Name.vn}</Text> : null
                 }
-                <TouchableOpacity style={styles.heartIcon} onPress={() => setTym(!tym)} >
+
+                 <TouchableOpacity style={styles.TouchText}  >
+                    <Text style={styles.ViewText}>{countView ?countView: 0 }</Text>
+                    </TouchableOpacity>
+
+                <TouchableOpacity style={styles.heartIcon} onPress={() => onPressTym()} >
                     <AntDesign name={tym ? "heart" : "hearto"} color="tomato" size={30} />
+
                 </TouchableOpacity>
             </View>
             {
@@ -105,9 +151,7 @@ const Story = (props) => {
                         </ScrollView>
                     </SafeAreaView> : null
             }
-                    <Button style={styles.doneBtn} onPress={()=> navigation.navigate("StoryTest",{
-                       story : story
-                    })}>Tớ đọc xong rồi !</Button>
+                    <Button style={styles.doneBtn} onPress={()=> submit()}>Tớ đọc xong rồi !</Button>
             
         </View>
     );
@@ -122,13 +166,11 @@ const styles = StyleSheet.create({
         marginTop: 0,
         overflow: "scroll",
         height: 350,
-        flexWrap:"wrap"
     },
     item: {
-        width: widthR * .6,
+        width: widthR * .8,
         marginLeft: widthR * .1,
         marginTop: 0,
-        // overflow: "hidden",
         justifyContent: "center",
         flexDirection: "row",
         flexWrap:"wrap"
@@ -187,7 +229,24 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "white",
         borderRadius: 50,
-        zIndex: 999
+        zIndex: 900
+    },
+    ViewText: {
+        color:"#2f5966",
+        fontSize:20
+    },
+    TouchText : {
+        position: "absolute",
+        right: 110,
+        bottom: 75,
+        minWidth:50,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor:"#59d8ff",
+        zIndex: 999,
+        paddingRight:10,
+        paddingLeft: 10,
+        borderRadius:5
     },
     itemView: {
         marginTop: 10,
@@ -214,7 +273,6 @@ const styles = StyleSheet.create({
         top: 15,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "white",
     },
     doneBtn:{
         backgroundColor: "#d3d2f7",

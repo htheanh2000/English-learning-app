@@ -7,5 +7,6 @@ export default {
     "Shop" : "Shop",
     "Mission" : "Mission",
     "Level" : "Level",
-    "Language": "Language"
+    "Language": "Language",
+    "Daily mission" : "Daily mission"
   };
