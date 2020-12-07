@@ -24,62 +24,38 @@ function DailyMission(props) {
     const dispatch = useDispatch()
     const user = useSelector(state => state.user)
     const [dailyList, setDailyList] = useState([])
-
+    const [correct, setCorrect] = useState()
     const { current } = props
 
     useEffect(() => {
 
-        let year = new Date().getFullYear()
-        let month = new Date().getMonth() + 1
-        let date = new Date().getDate()
-        if (new Date().getMonth() + 1 < 10) {
-            month = "0" + month
-        }
-
-        if (new Date().getDate() < 10) {
-            date = "0" + date
-        }
-
-        const current = year + '-' + month + '-' + date
-        console.log("current", current)
-
-
-
-        if (auth().currentUser) {
-            const userId = auth().currentUser.uid;
-            if (userId) {
-                database()
-                    .ref('users/' + userId + '/DailyMission/')
-                    .on('value', snapshot => {
-                        const list = snapshot.val()
-                        console.log("DailyMission", snapshot.val())
-                        if (list) {
-                            if (list && list.lastDaily)
-                                setDailyList(list)
-                        }
-                        else {
-                            console.log("current", current)
-                            database()
-                                .ref('users/' + userId + "/DailyMission")
-                                .set({
-                                    lastDaily: current,
-                                })
-                        }
-
-                    });
-            }
-        }
     }, [])
 
     const reciveGold =(index)=> {
+        setCorrect(1)
+    }
+    const rewwardGold =(gold)=> {
+        setCorrect(0)
+        console.log("rewwardGold")
+        const newGold = user.gold + gold
+       
         if (auth().currentUser) {
-            const userId = auth().currentUser.uid;
-            if (userId) {
-                database()
+          const userId = auth().currentUser.uid;
+          if (userId) {
+            database()
+            .ref('users/' + userId)
+            .update({
+              gold: newGold,
+            })
+            database()
                     .ref('users/' + userId + '/DailyMission/missionList/' + index)
                     .set(-1)
-            }
+
+          }
         }
+        
+        dispatch(updateGold(newGold))
+        setCorrect(-1)
     }
 
     const RenderBtn = (index) => {
@@ -103,6 +79,19 @@ function DailyMission(props) {
         }
 
     }
+
+    const Modal =()=> {
+        return(
+            <View style={styles.modal}>
+                <Image style={styles.modalImg} source={require("../../assets/congratulation.jpg")}></Image>
+                <Text style={styles.textImg}>Chúc mừng cậu đã hoàn thành thử thách!</Text>
+                <View style={{flexDirection:"row", paddingTop: 10}}>
+                    <Button color={"#fff"} style={{backgroundColor:"#543534", marginRight:10}} onPress={()=> rewwardGold(50)} >+{50} Gold</Button>
+                    <Button color={"#fff"} style={{backgroundColor:"#74d49f",marginLeft:10}}  onPress={()=> rewwardGold(100)} >+{100} Gold</Button>
+                </View>
+            </View>
+        )
+    }
     return (
         <View style={styles.container}>
             <View style={styles.dailyView}>
@@ -112,6 +101,9 @@ function DailyMission(props) {
                         {RenderBtn(index)}
                     </View>)}
             </View>
+            {
+                correct === 1 ?   <Modal></Modal>  : null
+            }
         </View>
     )
 }
@@ -121,7 +113,9 @@ export default DailyMission
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff"
+        backgroundColor: "#fff",
+        height:heightR,
+        width: widthR,
     },
     dailyView: {
         justifyContent: "center",
@@ -142,7 +136,29 @@ const styles = StyleSheet.create({
         position: "absolute",
         right: 0,
         backgroundColor: "#f1f52c"
-    }
+    },
+    modal: {
+        position:"absolute",
+        alignItems: 'center',
+        top:100,
+        paddingTop: 50,
+        width: 400,
+        height: 400,
+        borderRadius: 10,
+        backgroundColor: '#fff',
+    },
+    modalImg:{
+        width:200,
+        height:200
+    },
+    textImg: {
+        marginTop:20,
+        fontSize:20,
+        fontWeight:"bold",
+        width: 200,
+        textAlign:"center",
+        color:"#b39b9a"
+    },
 });
 
 

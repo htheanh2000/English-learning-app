@@ -13,7 +13,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import database from '@react-native-firebase/database';
 import { Calendar } from 'react-native-calendars'
 import { rollCall } from '../../store/user'
-import DailyCheck from './DailyCheck'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import DailyMission from './DailyMission'
 import I18n from '../../i18n/i18n'
@@ -21,27 +20,7 @@ const widthR = Dimensions.get("screen").width;
 const heightR = Dimensions.get("screen").height;
 const Tab = createMaterialTopTabNavigator();
 
-
-function SecondRoute() {
-    return (
-        <View style={styles.scene}>
-            <Text >Welcome back ! </Text>
-        </View>
-    )
-}
-
-
-function MyTabs() {
-    return (
-      <Tab.Navigator>
-        <Tab.Screen name="DailyCheck" component={DailyCheck} />
-
-        <Tab.Screen name={I18n.t("Daily mission")} component={DailyMission} />
-      </Tab.Navigator>
-    );
-  }
-
-function RollCallTab() {
+function DailyCheck() {
     const dispatch = useDispatch()
     const user = useSelector(state => state.user)
     const [isRollCalled, setRollCall] = useState(true)
@@ -72,6 +51,8 @@ function RollCallTab() {
             setRollCall(false)
         }
     })
+    
+
     const rollCallf = () => {
         dispatch(rollCall(current))
         if (auth().currentUser) {
@@ -96,12 +77,27 @@ function RollCallTab() {
     obj = user.rollCalls ? user.rollCalls.reduce((c, v) => Object.assign(c, { [v]: { selected: true, marked: true } }), {}) : null
     return (
         <View style={styles.container}>
-            {MyTabs()}
+            <Text style={styles.title}>Welcome back ! {user.username}</Text>
+            {
+                obj && showCalen ? <Calendar
+                    markedDates={obj}
+                /> : <Calendar/> 
+            }
+
+                
+
+             {
+                isRollCalled ? <TouchableOpacity style={styles.rollcall} onPress={() => rollCallf()}>
+                    <Image style={{ width: 200, height: 200 }} source={require('../../assets/rollcall.jpg')}></Image>
+                </TouchableOpacity> :null
+            }
+
+            
         </View>
     )
 }
 
-export default RollCallTab
+export default DailyCheck
 
 const styles = StyleSheet.create({
     container: {
