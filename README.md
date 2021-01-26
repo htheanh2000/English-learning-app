@@ -35,9 +35,11 @@ Library:
   Please check package.jon file to get all libray information
   
 Author: 
+
   - Huỳnh Thế Anh (Zeros)
   - Thắng
-  - DI
+  - Tô Hoài Quỳnh Vy 
+  
 Lisence:
   
  
@@ -49,12 +51,14 @@ Lisence:
  - School Email: 18520448@gm.uit.edu.vn
  - Github: https://github.com/htheanh2000
  
- Thắng:
- - Facebook: 
-
  
  Di:
+ 
  - Facebook: https://www.facebook.com/theanh0411/
+Thắng:
+
+Facebook: https://www.facebook.com/profile.php?id=100004665374782
+Email: 18521393@gm.uit.edu.vn
+Github: https://github.com/Nguyenducthang1912000
  
- 
- 
+
