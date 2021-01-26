@@ -36,16 +36,25 @@ Library:
   
 Author: 
   - Huỳnh Thế Anh (Zeros)
-  
+  - Thắng
+  - DI
 Lisence:
   
  
  Contact:
- 
+ Thế Anh:
  - Facebook: https://www.facebook.com/theanh0411/
  - Phone numeber + Zalo: 0782778712
  - Email: htheanh2000@gmail.com
  - School Email: 18520448@gm.uit.edu.vn
  - Github: https://github.com/htheanh2000
+ 
+ Thắng:
+ - Facebook: 
+
+ 
+ Di:
+ - Facebook: https://www.facebook.com/theanh0411/
+ 
  
  
